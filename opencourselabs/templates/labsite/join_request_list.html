@@ -1,0 +1,61 @@
+{% extends 'labsite/base_lab.html' %}
+{% block title %}{{block.super}} - List of Join Requests{% endblock %}
+{% block pageid %}labsite-join-requests{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	$('.operation-approve').click(function() { return confirm('Are you sure?'); });
+	$('.operation-deny').click(function() { return confirm('Are you sure?'); });
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Join requests</h2>
+	{% include 'snippets/message.html' %}
+	<p class="additional-questions">
+		{% if labsite.additional_question1 %}Question 1: <span class="additional-question">{{labsite.additional_question1}}</span><br/>{% endif %}
+		{% if labsite.additional_question2 %}Question 2: <span class="additional-question">{{labsite.additional_question2}}</span>{% endif %}
+	</p>
+	<table id="labsite-join-request-list">
+		<col width="30%" />
+		<col width="15%" />
+		<col width="15%" />
+		<col width="20%" />
+		<col width="15%" />
+		<thead>
+			<tr>
+				<th>User</th>
+				<th>Question 1</th>
+				<th>Question 2</th>
+				<th class="date">Req.Date</th>
+				<th class="row-operations">Operation</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% url labsite:dashboard labsite.url_key as labsite_url %}
+		{% for item in join_request_list %}
+			<tr>
+				<td>{{item.owner}}</td>
+				<td>{{item.additional_answer1}}</td>
+				<td>{{item.additional_answer2}}</td>
+				<td class="date">{{item.created_at|date:"Y-m-d H:i:s"}}</td>
+				<td class="row-operations">
+					<a class="operation approve" title="Approve as student" href="{{ labsite_url }}manage/join-requests/approve/?request_id={{ item.id }}&amp;type=student">Approve as student</a>
+					<a class="operation approve-special" title="Approve as staff" href="{{ labsite_url }}manage/join-requests/approve/?request_id={{ item.id }}&amp;type=staff">Approve as staff</a>
+					<a class="operation deny" title="Deny" href="{{ labsite_url }}manage/join-requests/deny/?request_id={{ item.id }}">Deny</a>
+				</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="5">No join request currently.</td>
+			</tr>
+		</tbody>
+	{% endfor %}
+	</table>
+{% endblock %}

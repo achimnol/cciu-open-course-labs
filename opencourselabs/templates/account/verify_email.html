@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{block.super}} - Registration{% endblock %}
+{% block pageid %}account-create{% endblock %}
+{% block content %}
+	<h2>Create Your Account</h2>
+	<div class="form-container">
+		<table id="step-indicator"><!-- IE does not support table-style display proprties. -->
+			<tr>
+			<td>Step 1</td>
+			<td>Step 2</td>
+			<td class="current">Step 3</td>
+			</tr>
+		</table>
+		{% if success %}
+		<p>Your account is now activated. You may <a href="/login/">sign in</a> and use our services.</p>
+		{% else %}
+		<div class="msg-error">The activation key is not valid.</div>
+		{% endif %}
+	</div>
+{% endblock %}

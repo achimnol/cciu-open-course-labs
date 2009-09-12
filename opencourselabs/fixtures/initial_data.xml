@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<django-objects version="1.0">
+	<object pk="1" model="sites.site">
+		<field type="CharField" name="domain">cciu.org</field>
+		<field type="CharField" name="name">CCI:U</field>
+	</object>
+	<object pk="1" model="flatpages.flatpage">
+		<field type="CharField" name="url">/acknowledgement/</field>
+		<field type="CharField" name="title">Acknowldgement</field>
+		<field type="BooleanField" name="enable_comments">0</field>
+		<field type="BooleanField" name="registration_required">0</field>
+		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
+		<field type="TextField" name="content"><![CDATA[
+<h2>Acknowledgement</h2>
+<p>CCI:U is made by not only NexR CCI:U Team, but also variouse open sources and free web resources.
+We have graciously used those, so hereby let us express thanks. :)</p>
+<h3>Thanks to Open Source</h3>
+<ul>
+	<li><a href="http://www.djangoproject.com">Django Web Framework</a> (used under BSD License)</li>
+	<li><a href="http://jquery.com">jQuery &amp; jQuery UI</a> (used under MIT License)</li>
+	<li><a href="http://hadoop.apache.org">Hadoop</a> (used under Apache License 2.0)</li>
+	<li><a href="http://djangosnippets.org">Django Snippets</a> (with royalty-free permissions)</li>
+	<li><a href="http://code.google.com/p/swfupload/">SWFUpload</a> (used under MIT License)</li>
+</ul>
+<h3>Thanks for royalty-free resources</h3>
+<ul>
+	<li><a href="http://tango.freedesktop.org/Tango_Icon_Gallery">Tango Icon Project</a> (public domain)</li>
+	<li><a href="http://www.pinvoke.com/">Fugue Icons by Yusuke Kamiyamane</a> (used under Creative Commons Attribution 3.0 license)</li>
+</ul>
+]]></field>
+	</object>
+	<object pk="100" model="flatpages.flatpage">
+		<field type="CharField" name="url">/help/</field>
+		<field type="CharField" name="title">Help</field>
+		<field type="BooleanField" name="enable_comments">0</field>
+		<field type="BooleanField" name="registration_required">0</field>
+		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
+		<field type="TextField" name="content"><![CDATA[
+<h2>Help</h2>
+<h3>Frequently Askes Questions</h3>
+<p>Welcome to the help of CCI:U. We are listing the most frequently asked questions.
+To send a detailed feedback, please see <a href="/contact/">contact</a>.</p>
+<ul>
+	<li><a href="/help/ssh/">How to connect to my instances via SSH (and using PuTTY)?</a></li>
+	<li><a href="/help/hadoop/">How to use Hadoop?</a></li>
+</ul>
+		]]></field>
+	</object>
+	<object pk="101" model="flatpages.flatpage">
+		<field type="CharField" name="url">/help/ssh/</field>
+		<field type="CharField" name="title">Help: Using SSH</field>
+		<field type="BooleanField" name="enable_comments">0</field>
+		<field type="BooleanField" name="registration_required">0</field>
+		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
+		<field type="TextField" name="content"><![CDATA[
+<h2>Help: Using SSH</h2>
+<p>This is the key to connect and send commands to your instances.
+Please follow the following instructions. :)</p>
+<h3>For command-line envrionments (like Linux, Cygwin, etc.)</h3>
+<ol>
+	<li>Click <strong>[Get Private Key]</strong> button in the team console and save it as a file like <code>my-cciu.key</code>.
+		<div class="media"><img src="/media/images/help/ssh-get-private-key.png" alt="The screenshot for getting your SSH private key." /></div>
+	</li>
+	<li>Run the following command:
+		<pre><code>$ ssh -i my-cciu.key root@&lt;Public DNS of a instance&gt;</code></pre>
+	</li>
+	<li>Now you will see the root prompt on your instance.</li>
+</ol>
+<h3>For PuTTY</h3>
+<p>PuTTY does not accept the private key as in the format we provide.
+You can convert it to PuTTY's private key format with the following instructions.</p>
+<ol>
+	<li>Save the private key like above.
+	</li>
+	<li>Open <strong>PuTTYgen</strong> (PuTTY Key Generator) application.
+		<div class="media"><img src="/media/images/help/ssh-running-puttygen.png" alt="The screenshot for getting your SSH private key." /></div>
+	</li>
+	<li>Click <strong>[Load]</strong> button and choose the saved key.
+		<div class="media"><img src="/media/images/help/ssh-puttygen-load-key.png" alt="The screenshot for getting your SSH private key." /></div>
+		(Set the file format combobox to 'All Files (*.*)'.)
+		<div class="media"><img src="/media/images/help/ssh-puttygen-load-key-select.png" alt="The screenshot for getting your SSH private key." /></div>
+		You will see a message saying &ldquo;Successfully imported foreign key (OpenSSH SSH-2 private key).&rdquo;.
+	</li>
+	<li>In the File menu, click <strong>[Save private key]</strong>.
+		<div class="media"><img src="/media/images/help/ssh-puttygen-save-ppk.png" alt="The screenshot for getting your SSH private key." /></div>
+		You may be alerted by a passphrase warning, but unless you want to type a password whenever you connect to instances, just press [Yes] to ignore it.
+		<div class="media"><img src="/media/images/help/ssh-puttygen-save-ppk-warning.png" alt="The screenshot for getting your SSH private key." /></div>
+		Here, you can save the private key as a converted ppk file.
+	</li>
+	<li>Close PuTTYgen and <strong>run Pageant</strong>.
+		<div class="media"><img src="/media/images/help/ssh-running-pageant.png" alt="The screenshot for getting your SSH private key." /></div>
+	</li>
+	<li>Click <strong>[Add Key]</strong> from the tray menu of Pageant and select the ppk file saved above.
+		<div class="media"><img src="/media/images/help/ssh-pageant-add-key.png" alt="The screenshot for getting your SSH private key." /></div>
+	</li>
+	<li>Don't terminate Pageant. Now <strong>run PuTTY</strong> and connect to your instances via the Public DNS addresses. You'll not need any log-in process. :)</li>
+</ol>
+		]]></field>
+	</object>
+	<object pk="102" model="flatpages.flatpage">
+		<field type="CharField" name="url">/help/hadoop/</field>
+		<field type="CharField" name="title">Help: Using Hadoop</field>
+		<field type="BooleanField" name="enable_comments">0</field>
+		<field type="BooleanField" name="registration_required">0</field>
+		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
+		<field type="TextField" name="content"><![CDATA[
+<h2>Help: Using Hadoop</h2>
+<p>If your team instances are deployed as a Hadoop cluster, you can use a fully initialized Hadoop environment.</p>
+<h3>Viewing the job tracker</h3>
+<p>You can view the job tracker provided by Hadoop with the following methods:
+<ul>
+	<li>Click <strong>[View Job Tracker]</strong> button at the team console page.</li>
+	<li>Connect to your master node directly with address like <strong><code>http://&lt;MasterIP&gt;:&lt;DefaultTrackerPort&gt;</code></strong>.</li>
+</ul>
+	<div class="ui-paragraph-message ui-state-highlight ui-corner-all">
+		<span class="ui-icon ui-icon-alert" style="float:left"></span>
+		<p>You have to allocate a public IP to the master node first.</p>
+	</div>
+	<div class="ui-paragraph-message ui-state-info ui-corner-all">
+		<span class="ui-icon ui-icon-info" style="float:left"></span>
+		<p>Once your team instances are initialized as a Hadoop cluster, dynamic addition of new instances without destroying existing ones is impossible due to technical reasons.
+		Before requesting more instances to your team cluster, be sure that your important data and programs are backuped.</p>
+	</div>
+<h3>Running your MapReduce program</h3>
+<ol>
+	<li>Upload your program (jar) and data files to the master node via SSH or SFTP.</li>
+	<li>Run the following command: <code>TODO</code></li>
+</ol>
+		]]></field>
+	</object>
+</django-objects>

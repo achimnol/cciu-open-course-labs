@@ -1,0 +1,2 @@
+{% for field in theform.visible_fields %}<tr><th>{% if field.field.required %}<span class="required" title="This field is required.">*</span>{% endif %}{{field.label_tag}} :</th><td>{{field}}{% if field.errors %}{{field.errors}}{% endif %}{% if field.help_text %}<p class="help">{{field.help_text|safe}}</p>{% endif %}</td></tr>
+{% endfor %}<tr style="display:none"><th></th><td>{% for field in theform.hidden_fields %}{{field}}{% endfor %}</td></tr>

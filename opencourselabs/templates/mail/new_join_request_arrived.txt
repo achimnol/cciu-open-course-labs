@@ -1,0 +1,16 @@
+{% autoescape off %}
+Dear the staffs,
+
+A new join request to the course lab {{labsite.get_organization_display}} {{labsite.course}} {{labsite.title}} has been arrived. Please check it and approve or deny the request.
+
+Information of the one who sent request:
+ * Name : {{requester.get_profile.real_name}}
+ * Email : {{requester.email}}
+ * Answer for Question 1 : {{answer1}}
+ * Answer for Question 2 : {{answer2}}
+
+You can see the list of join requests here: http://{{host}}{% url labsite:join-requests labsite.url_key %}
+Thanks for your attention!
+
+- NexR CCI:U Team
+{% endautoescape %}

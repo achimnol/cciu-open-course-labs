@@ -1,0 +1,15 @@
+{% autoescape off %}
+Dear {{you.get_profile.real_name}},
+Your course lab creation request (submitted at {{request.created_at|date:"Y-m-d H:i:s"}}) has been denied.
+
+Attached information:
+
+ * Organization : {{request.get_organization_display}}
+ * Title : {{request.title}}
+ * Course : {{request.course}}
+ * Usage period : from {{request.period_begin|date:"Y-m-d"}} to {{request.period_end|date:"Y-m-d"}}
+
+We are sorry, but feel free to contact us if you have any problems with this.
+
+- NexR CCI:U Team
+{% endautoescape %}

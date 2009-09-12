@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load forms %}
+{% block title %}{{block.super}} - Registration{% endblock %}
+{% block pageid %}account-create{% endblock %}
+{% block extra_headers %}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	$('#login').submit(function() {
+		if ($('#id_password_check').val() != $('#id_password').val()) {
+			alert('The retyped password does not match. Please type it again.');
+			return false;
+		}
+		return true;
+	});
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+	<h2>Create Your Account</h2>
+	<div class="form-container">
+		<table id="step-indicator"><!-- IE does not support table-style display proprties. -->
+			<tr>
+			<td class="current">Step 1</td>
+			<td>Step 2</td>
+			<td>Step 3</td>
+			</tr>
+		</table>
+		{% include 'snippets/message_error.html' %}
+		<form id="login" method="post" action="/account/create/">
+			<table>
+				{% print_form_as_table create_form %}
+				<tr><th><label for="id_password_check">Retype password :</label></th><td><input type="password" id="id_password_check" value="" /></td></tr>
+				<tr class="form-controls"><th></th><td class="submit-area"><button type="submit">Create Account</button></td></tr>
+				<tr><th></th><td><p>Already have a CCI:U account? <a href="/login/">Sign In.</a></p></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

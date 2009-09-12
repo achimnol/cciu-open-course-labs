@@ -1,0 +1,60 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% block title %}{{block.super}} - Assignments{% endblock %}
+{% block pageid %}labsite-assignment-list{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+{{create_form.media}}
+{% endblock %}
+{% block content %}
+	{% has_row_perm user labsite "staff" as is_staff %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Assignments</h2>
+	{% include 'snippets/message.html' %}
+	<div id="page-operations">
+		<ul>
+			{% if is_staff %}<li><a id="operation-new" class="button" href="{% url labsite:assignment-create labsite.url_key %}">New Assignment</a></li>{% endif %}
+		</ul>
+	</div>
+	<table id="labsite-assignment-list">
+		<col />
+		<col width="22%" />
+		<col width="16%" />
+		{% if is_staff %}<col width="15%" />{% endif %}
+		<col width="12%" />
+		<thead>
+			<th>Name</th>
+			<th class="date">Due-date</th>
+			<th>Type</th>
+			{% if is_staff %}<th class="submissions">Submissions</th>{% endif %}
+			<th class="row-operations">Actions</th>
+		</thead>
+		<tbody>
+		{% for item in assignment_list %}
+			<tr>{% url labsite:assignment-detail labsite.url_key as assignment_url %}
+				<td><a href="{{assignment_url}}?id={{item.id}}">{{item.name}}</a></td>
+				<td class="date">{{item.due_date|date:"Y-m-d H:i:s"}}</td>
+				<td>{{item.get_type_display}}</td>
+				{% if is_staff %}
+					{% if item.type == 0 %}
+				<td class="submissions">{{item.user_submission_count}} / {{total_users}}</td>
+					{% else %}
+				<td class="submissions">{{item.team_submission_count}} / {{total_teams}}</td>
+					{% endif %}
+				{% endif %}
+				<td class="row-operations">
+					<a  class="operation submit" title="Submit" href="{% url labsite:assignment-submit labsite.url_key %}?id={{item.id}}">Submit</a>
+					{% if is_staff %}<a class="operation modify" title="Modify" href="{% url labsite:assignment-modify labsite.url_key %}?id={{item.id}}">Modify</a>{% endif %}
+				</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="{% if is_staff %}5{% else %}4{% endif %}">No assignments now.</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

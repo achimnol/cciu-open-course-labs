@@ -1,0 +1,37 @@
+{% extends 'labsite/base_lab.html' %}
+{% load forms %}
+{% load smartif %}
+{% block title %}{{block.super}} - BBS: {{labsite.title}}{% endblock %}
+{% block pageid %}labsite-bbs-view{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+{{write_form.media}}
+{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>BBS: Write Article</h2>
+	<div class="form-container">
+		<form method="post" action="">
+			<table>
+				{% print_form_as_table write_form %}
+				{% if mode == "modify" %}
+				<tr>
+					<th><label for="id_remove_attachments">Delete existing attachments :</label></th>
+					<td><input type="checkbox" id="id_remove_attachments" name="remove_attachments" /></td>
+				</tr>
+				<tr>
+					<th><label>Current attachments :</label></th>
+					<td>
+						{% for item in article.attachments.all %}
+						<a href="{% url labsite:bbs-attachment-download labsite.url_key,board.id %}{{item.name|urlencode}}?article_id={{article.id}}&amp;file_id={{item.id}}">{{item.name}}</a>{% if not forloop.last %},{% endif %}
+						{% empty %}(None){% endfor %}
+					</td>
+				</tr>
+				{% endif %}
+				<tr class="form-controls"><th></th><td><input type="submit" class="inline-button" value="Save" /></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

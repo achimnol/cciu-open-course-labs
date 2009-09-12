@@ -1,0 +1,68 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% block title %}{{block.super}} - List of Teams{% endblock %}
+{% block pageid %}labsite-teams{% endblock %}
+{% block extra_headers %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/media/css/labsite.css" />
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	LoadingIndicator.inject('#page-operations');
+	$('.operation.delete').click(function(ev) {
+		var yes = confirm('Are you sure?');
+		if (yes) {
+			LoadingIndicator.show();
+		}
+		return yes;
+	});
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Team List</h2>
+	{% include 'snippets/message.html' %}
+	{% if is_staff %}
+	<div id="page-operations">
+		<ul>
+			<li><a id="operation-createTeam" class="button" href="{{ labsite_url }}manage/teams/create/">Create a Team</a></li>
+		</ul>
+	</div>
+	{% endif %}
+	<table id="labsite-team-list">
+		<col width="20%" />
+		<col width="12%" />
+		<col />
+		<col width="12%" />
+		<thead>
+			<tr>
+				<th class="name">Name</th>
+				<th class="num-vm">Num of VMs</th>
+				<th class="members">Members</th>
+				{% if is_staff or is_student %}<th class="row-operations">Actions</th>{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+		{% for item in team_list %}
+			<tr>
+				<td class="name">{% if is_staff %}<a href="{{labsite_url}}teams/{{item.id}}/">{{item.name}}</a>{% else %}{{item.name}}{% endif %}</td>
+				<td class="num-vm">{% if item.num_vm_using != item.num_vm %}{{item.num_vm_using}} / {% endif %}{{item.num_vm}}</td>
+				<td class="members">{% for member in item.members.all %}{{ member.get_profile.real_name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+				{% if is_staff or is_student %}<td class="row-operations"><a class="operation modify" title="Modify" href="{{ labsite_url }}manage/teams/modify/?id={{ item.id }}">Modify</a>
+				{% if is_staff %}<a class="operation delete" title="Delete" href="{{ labsite_url }}manage/teams/delete/?id={{ item.id }}">Delete</a>{% endif %}</td>{% endif %}
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="{% if is_staff %}4{% else %}3{% endif %}">No teams exist.</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

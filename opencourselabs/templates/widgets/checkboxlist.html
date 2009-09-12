@@ -1,0 +1,5 @@
+<div class="ui-checkboxlist">
+{% for item in choices %}
+	<p><label><input id="{{id}}_{{forloop.counter0}}" name="{{name}}" type="checkbox" value="{{item.value}}"{% if item.checked %} checked="checked"{% endif %} />{{item.display_text}}</label></p>
+{% endfor %}
+</div>

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load forms %}
+{% load smartif %}
+{% block title %}{{block.super}} - Sign In{% endblock %}
+{% block extra_headers %}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	$('#id_email').focus();
+});
+//]]>
+</script>
+{% endblock %}
+{% block pageid %}account-login{% endblock %}
+{% block content %}
+	<h2>Sign In</h2>
+	<div class="form-container">
+		{% include 'snippets/message_error.html' %}
+		{% if next_url != "/" %}<p>To access this page, you have to sign in first.</p>{% endif %}
+		<form id="login" method="post" action="/login/?next={{next_url}}">
+			<table>
+				{% print_form_as_table login_form %}
+				<tr class="form-controls"><th></th><td class="submit-area"><button type="submit">Sign In</button></td></tr>
+				<tr><th></th><td><p>Forgot password?</p><p>Don't have an account yet? <a href="/account/create/">Register one.</a></p></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'labsite/base.html' %}
+{% block title %}{{block.super}} - Course Labs{% endblock %}
+{% block pageid %}labsite-main{% endblock %}
+{% block content %}
+	<h2>Course Labs</h2>
+	<h3>What is this?</h3>
+	<p>
+		Course labs are where you can use our cloud-computing resources via our web console with ease.
+		Academic users no longer have to manage their own clusters which costs a lot of money and time.
+	</p>
+	<p>
+		It also provies convenient ways to archive and share useful tips and codes produced in your courses.
+	</p>
+	<h3>How to use</h3>
+	<p>
+		<strong>If you are a teaching assisstant,</strong><br/>
+		Click &lsquo;NEW COURSE LAB&rsquo; on the sidebar and fill up the course lab creation request form.
+		Our service operator will inspect it and create your own course lab.
+	</p>
+	<p>
+		<strong>If you are a student,</strong><br/>
+		Visit the course lab URL given by the professor or TAs, and clik &lsquo;Join&rsquo; on the course lab page.
+		You may have to answer some additional questions given by your TA.
+	</p>
+{% endblock %}

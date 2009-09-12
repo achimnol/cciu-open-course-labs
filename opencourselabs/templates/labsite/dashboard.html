@@ -1,0 +1,52 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% block title %}{{block.super}} - Dashboard: {{labsite.title}}{% endblock %}
+{% block pageid %}labsite-dashboard{% endblock %}
+{% block content %}
+{% url labsite.views.dashboard labsite.url_key as labsite_url %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% has_row_perm user labsite "student" as is_student %}
+	<h2>{{labsite.organization|upper}} {{labsite.course}} - {{labsite.title}}</h2>
+	<div id="statusbar">
+		<div class="statusbar-module">
+			<h4>My Team{% if user_team %}: <span class="team-name">{{user_team.name}}</span>{% endif %}</h4>
+			<ul id="member-list">
+			{% for member in user_team.members.all %}
+				<li class="member">{{member.get_profile.real_name}}<br/><span class="email">({{member.email}})</span></li>
+			{% empty %}
+				<li class="info">You're not in any team.</li>
+			{% endfor %}
+			</ul>
+		</div>
+		<div class="statusbar-module">
+			<h4>Assignments</h4>
+			<ul id="assignment-list">
+			{% for item in assignment_list %}
+				<li><a href="{% url labsite:assignment-detail labsite.url_key %}?id={{item.id}}">{{item.name}}</a></li>
+			{% empty %}
+				<li class="empty">No assignments left!</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="main-module">
+		<p>{{labsite.description|linebreaksbr}}</p>
+	</div>
+	<div class="main-module">
+		<h4>Recent Notices</h4>
+		<ul id="notice-list">
+		{% for item in notice_list %}
+			<li><a href="{% url labsite:bbs-view labsite.url_key,item.belongs_to.id,item.id %}">{{item.title}}</a> <span class="date">{{item.written_at|date:"n/j H:i"}}</span></li>
+		{% empty %}
+			<li class="empty">No notices.</li>
+		{% endfor %}
+		</ul>
+	</div>
+	<div class="main-module">
+		<h4>Site Statistics</h4>
+		<ul>
+			<li>Total VMs allocated : {{stat.vm.allocated}} / {{stat.vm.total}}</li>
+			<li>Total IPs allocated : {{stat.ip.allocated}} / {{stat.ip.total}}</li>
+		</ul>
+	</div>
+{% endblock %}

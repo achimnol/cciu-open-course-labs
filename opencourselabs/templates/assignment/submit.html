@@ -1,0 +1,70 @@
+{% extends 'labsite/base_lab.html' %}
+{% load forms %}
+{% block title %}{{block.super}} - Submit Assignment{% endblock %}
+{% block pageid %}labsite-assignment-submit{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+{{submit_form.media}}
+<script type="text/javascript">
+//<![CDATA[
+var metadata_fields = ['type', 'license', 'license_custom', 'hadoop_version', 'main_class'];
+
+function showMetadataFields(show) {
+	if (show) {
+		$.each(metadata_fields, function(index, item) {
+			$('label[for=id_' + item + ']').parent().parent().show();
+		});
+		if ($('#id_license').val() != 'Other') {
+			$('#id_license_custom').parent().parent().hide();
+		}
+	} else {
+		$.each(metadata_fields, function(index, item) {
+			$('label[for=id_' + item + ']').parent().parent().hide();
+		});
+	}
+}
+
+$(document).ready(function() {
+	$('#id_add_metadata').click(function(ev) {
+		showMetadataFields($(this).attr('checked'));
+	});
+	$('#id_license').change(function(ev) {
+		if ($(this).val() == 'Other') {
+			$('#id_license_custom').parent().parent().show();
+		} else {
+			$('#id_license_custom').parent().parent().hide();
+		}
+	});
+	showMetadataFields($('#id_add_metadata').attr('checked'));
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Submit Assignment</h2>
+	<div class="form-container">
+		{% include 'snippets/message_warning.html' %}
+		{% include 'snippets/message_error.html' %}
+		<form id="submitForm" method="post" action="">
+			<table>
+				<col width="25%" />
+				<col />
+				<tr><th><label>Assignment Name :</label></th><td>{{assignment.name}}</td></tr>
+				{% print_form_as_table submit_form %}
+				<tr>
+					<th><label>Current attachments :</label></th>
+					<td>
+						{% for item in submission.attachments.all %}
+						<a href="{% url labsite:assignment-submission-download labsite.url_key %}{{item.name|urlencode}}?submission_id={{submission.id}}&amp;file_id={{item.id}}">{{item.name}}</a>{% if not forloop.last %},{% endif %}
+						{% empty %}(None){% endfor %}
+					</td>
+				</tr>
+				{% print_form_as_table metadata_form %}
+				<tr class="form-controls"><th></th><td class="submit-area"><input type="submit" class="inline-button" value="Submit" /></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

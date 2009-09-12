@@ -1,0 +1,61 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% load forms %}
+{% block title %}{{block.super}} - Assignment Detail{% endblock %}
+{% block pageid %}labsite-assignment-detail{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Assignment: {{assignment.name}}</h2>
+	<dl>
+		<dt>Due-date</dt>
+		<dd>{{assignment.due_date}}</dd>
+		<dt>Type</dt>
+		<dd>{{assignment.get_type_display}}</dd>
+		<dt>Description</dt>
+		<dd><p class="assignment-desc">{{assignment.description|linebreaksbr}}</p></dd>
+		<dt>Attachments</dt>
+		<dd>
+			<ul class="attachments">
+			{% for item in assignment.attachments.all %}
+				<li><a href="{% url labsite:assignment-download labsite.url_key %}{{item.name|urlencode}}?assignment_id={{assignment.id}}&amp;file_id={{item.id}}">{{item.name}}</a></li>
+			{% empty %}
+				<li class="empty">(None)</li>
+			{% endfor %}
+			</ul>
+		</dd>
+	{% if is_staff %}
+	</dl>
+	<h3>Submission List</h3>
+	<ul class="submissions">
+	{% for item in submission_list %}
+		<li>{% if assignment.type == 0 %}{{item.submitter}}{% else %}{{item.team.name}}{% endif %} / {{item.submitted|date:"Y-m-d H:i:s"}} / <a href="{% url labsite:assignment-submission-detail labsite.url_key %}?id={{item.id}}">View contents</a></li>
+	{% empty %}
+		<li class="empty">No submissions yet.</li>
+	{% endfor %}
+	</ul>
+	{% else %}
+		<dt>Status</dt>
+		{% if did_submit %}
+		<dd>
+			<p>{% if assignment.type == 0 %}You{% else %}Your team{% endif %} have already submitted this assignment. (At {{submission.submitted|date:"Y-m-d H:i:s"}}) <a href="{% url labsite:assignment-submission-detail labsite.url_key %}?id={{submission.id}}">&rarr; See details</a></p>
+			<h4>Submitted Description</h4>
+			<p class="submission-desc">{{submission.description|linebreaksbr}}</p>
+			<h4>Submitted Attachments</h4>
+			<ul class="attachments">
+			{% for item in submission.attachments.all %}
+				<li><a href="{% url labsite:assignment-submission-download labsite.url_key %}{{item.name|urlencode}}?submission_id={{submission.id}}&amp;file_id={{item.id}}">{{item.name}}</a> ({{item.size|filesizeformat}})</li>
+			{% empty %}
+				<li class="empty">No attachments.</li>
+			{% endfor %}
+			</ul>
+		</dd>
+		{% else %}
+		<dd>{% if assignment.type == 0 %}You{% else %}Your team{% endif %} have to submit this assignment! <a href="{% url labsite:assignment-submit labsite.url_key %}?id={{assignment.id}}">Goto submit.</a></dd>
+	</dl>
+		{% endif %}
+	{% endif %}
+{% endblock %}

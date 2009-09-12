@@ -1,0 +1,21 @@
+	<div class="paginator">
+	{% if has_previous %}
+		<a href="?{{queries.urlencode}}&amp;page=1" class="first">&laquo;</a>
+		<a href="?{{queries.urlencode}}&amp;page={{previous}}" class="previous">&lsaquo;</a>
+	{% else %}
+		<span class="first-disabled">&laquo;</span>
+		<span class="previous-disabled">&lsaquo;</span>
+	{% endif %}
+	{% for p in page_range %}
+		<a href="?{{queries.urlencode}}&amp;page={{p}}" class="page{% ifequal p page %} selected{% endifequal %}">{{p}}</a>
+	{% empty %}
+		<a href="?{{queries.urlencode}}&amp;page=1" class="page selected">1</a>
+	{% endfor %}
+	{% if has_next %}
+		<a href="?{{queries.urlencode}}&amp;page={{next}}" class="next">&rsaquo;</a>
+		<a href="?{{queries.urlencode}}&amp;page={{pages}}" class="last">&raquo;</a>
+	{% else %}
+		<span class="next-disabled">&rsaquo;</span>
+		<span class="last-disabled">&raquo;</span>
+	{% endif %}
+	</div>

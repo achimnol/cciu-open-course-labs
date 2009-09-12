@@ -1,0 +1,28 @@
+@charset "utf-8";
+
+td.state {
+	text-align: center;
+}
+span.state {
+	color: #444;
+	font-style: italic;
+}
+span.state-pending {
+	color: #36c;
+}
+span.state-running {
+	color: #393;
+}
+span.state-shuttingdown {
+	color: #f66;
+}
+span.state-rebooting {
+	color: #f60;
+}
+span.state-terminated {
+	color: #999;
+}
+span.state-broken {
+	color: red;
+	font-weight: bold;
+}

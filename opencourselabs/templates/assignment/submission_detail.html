@@ -1,0 +1,31 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% load forms %}
+{% block title %}{{block.super}} - Submission Detail{% endblock %}
+{% block pageid %}labsite-assignment-submission-detail{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo;
+		<span class="breadcrumb-item"><a href="{% url labsite:dashboard labsite.url_key %}">{{labsite.course}} - {{labsite.title}}</a></span> &raquo;
+		<span class="breadcrumb-item"><a href="{% url labsite:assignment-detail labsite.url_key %}?id={{assignment.id}}">Assignment - {{assignment.name}}</a></span> &raquo;
+	</div>
+	<h2>Submission Detail</h2>
+	<dl>
+		<dt>Description</dt>
+		<dd><p class="submission-desc">{{submission.description|linebreaksbr}}</p></dd>
+		<dt>Submitter<dt>
+		<dd>{{submission.submitter}}{% if submission.team %} (at team {{submission.team.name}}){% endif %}</dd>
+		<dt>Attachments</dt>
+		<dd>
+			<ul class="attachments">
+			{% for item in submission.attachments.all %}
+				<li><a href="{% url labsite:assignment-submission-download labsite.url_key %}{{item.name|urlencode}}?submission_id={{submission.id}}&amp;file_id={{item.id}}">{{item.name}}</a> ({{item.size|filesizeformat}})</li>
+			{% empty %}
+				<li class="empty">No attachments.</li>
+			{% endfor %}
+			</ul>
+		</dd>
+	</dl>
+{% endblock %}

@@ -1,0 +1,15 @@
+@charset "utf-8";
+
+.infobox img {
+	left: -100px;
+}
+
+#IE6-MUST-DIE {
+	background: #e2f2ff;
+	border: 1px solid #06a;
+	padding: 6px;
+}
+
+#IE6-MUST-DIE p {
+	margin: 6px;
+}

@@ -1,0 +1,202 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load forms %}
+{% load smartif %}
+{% block title %}{{block.super}} - Team Console{% endblock %}
+{% block pageid %}labsite-team-console{% endblock %}
+{% block extra_headers %}
+{{ block.super }}
+{% has_row_perm user labsite "staff" as is_staff %}
+<link rel="stylesheet" type="text/css" href="/media/css/console.css" />
+<script type="text/javascript" src="/media/js/console.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+var is_hadoop = {% if instance_group.type == 1 %}true{% else %}false{% endif %};
+var is_staff = {% if is_staff %}true{% else %}false{% endif %};
+var can_connect_jobtracker = {% if instance_group.master.elastic_ip %}true{% else %}false{% endif %};
+function updateToolbarState() {
+	var num_selected_instances = 0;
+	$('td.select :checkbox').each(function() {
+		num_selected_instances += $(this).attr('checked') ? 1 : 0;
+	});
+	if (num_selected_instances > 0)
+		$('#operation-reboot').enable().removeAttr('title');
+	else
+		$('#operation-reboot').disable().attr('title', 'Select one or more instances to reboot.');
+}
+$(document).ready(function() {
+	LoadingIndicator.inject('#page-operations');
+	$('#operation-refresh').click(function(ev) {
+		ev.preventDefault();
+		refresh();
+	});
+	$('#operation-reboot').click(function(ev) {
+		ev.preventDefault();
+		reboot();
+	});
+	{% if is_staff %}
+	$('#operation-deleteInstances').click(function(ev) {
+		ev.preventDefault();
+		if (confirm('Are you sure to delete the selected instances?')) {
+			deleteInstances();
+		}
+	});
+	$('#id_redeploy_hadoop').click(function(ev) {
+		if (is_hadoop) {
+			$(this).attr('checked', true);
+			alert('The current instance group is already a Hadoop cluster, so it must redeployed.');
+			return;
+		}
+		if ($(this).attr('checked')) {
+			alert('If you (re)deploy Hadoop, it will destroy the current instances. Please be sure all necessary data is backed up.');
+		}
+	});
+	$('#dialog-addInstances').dialog({
+		bgiframe: true, 
+		autoOpen: false,
+		modal: true,
+		width: 300,
+		resizable: false,
+		title: 'Add Instances',
+		buttons: {
+			'OK': function() {
+				if (!confirm('Are you sure?\n(If the sum of the existing instances and new instances is larger than the current allocation to the team, the number of instances allocated to the team will be increased with consuming the allocation to the course lab.)'))
+					return;
+				$('#dialog-addInstances').parent().find('button').disable();
+				$.ajax({
+					url: '?action=add',
+					type: 'POST',
+					data: $('#form-addInstances').serialize(),
+					dataType: 'json',
+					success: function(response) {
+						if (response.result == 'success') {
+							window.location.reload();
+						} else {
+							switch (response.errorType) {
+							case 'InputValidation':
+								if (response.data.num_instances) {
+									$('#dialog-addInstances #id_num_instances').addClass('ui-state-error');
+								}
+								alert('Error: ' + response.message + ' (' + response.data.num_instances[0] + ')');
+								break;
+							case 'Backend':
+								handleFailure(response);
+								break;
+							default:
+								alert('Error: ' + response.message);
+							}
+						}
+					},
+					complete: function() {
+						$('#dialog-addInstances').parent().find('button').enable();
+					}
+				});
+			},
+			'Cancel': function() {
+				$(this).dialog('close');
+			}
+		},
+		close: function() {
+			$('#dialog-addInstances #id_num_instances').removeClass('ui-state-error');
+		}
+	});
+	$('#operation-addInstances').click(function(ev) {
+		ev.preventDefault();
+		if ($(this).attr('disabled')) return;
+		if (is_hadoop)
+			$('#id_redeploy_hadoop').attr('checked', true);
+		$('#dialog-addInstances').dialog('open');
+	});
+	{% endif %}
+	$('td.select').click(function(ev) {
+		var id = $(this).parent().attr('id').split('-')[1];
+		var checked = $('#checkbox-' + id).attr('checked');
+		$('#checkbox-' + id).attr('checked', checked ? false : true);
+		toggleInstance(id);
+		updateToolbarState();
+		ev.stopPropagation();
+	});
+	$('td.select :checkbox').click(function(ev) {
+		var id = $(this).val();
+		toggleInstance(id);
+		updateToolbarState();
+		ev.stopPropagation();
+	});
+	// Some browsers may have persistent checkbox status when reloaded.
+	$.each($('td.select :checkbox'), function(index) {
+		var id = $(this).attr('id').split('-')[1];
+		toggleInstance(id);
+	});
+	updateToolbarState();
+	if (!can_connect_jobtracker) {
+		$('#operation-viewJobTracker').disable()
+		.attr('title', 'You have to allocate a public IP to the master instance (which is starred).');
+	}
+	window.setTimeout(function(timer_id) { refresh(); }, 100);
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo; <span class="breadcrumb-item">Team "{{team.name}}"</span> &raquo;
+	</div>
+	<h2>Manage Instances</h2>
+	<div id="page-operations">
+		<ul>
+			<li><a id="operation-refresh" class="button" href="?action=describe"><span class="ui-icon"></span>Refresh</a></li>
+			<li><a id="operation-reboot" class="button" href="?action=reboot"><span class="ui-icon"></span>Reboot</a></li>
+			<li><a id="operation-getKey" class="button" href="?action=getKey"><span class="ui-icon"></span>Get Private Key</a></li>
+			{% if instance_group.type == 1 %}
+			<li><a id="operation-viewJobTracker" class="button" href="http://{{instance_group.master.elastic_ip}}:50030"><span class="ui-icon"></span>Hadoop Job Tracker</a></li>
+			{% endif %}
+			{% if is_staff %}
+			<li><a id="operation-deleteInstances" class="button" href="?action=delete"><span class="ui-icon"></span>Delete</a></li>
+			<li><a id="operation-addInstances" class="button" href="?action=add"><span class="ui-icon"></span>Add</a></li>
+			{% endif %}
+			<li><a id="operation-help" href="/help/ssh/" title="Show help on using SSH with the private key"><img src="/media/images/icon-help.png" alt="Help" /></a></li>
+		</ul>
+	</div>
+	<form id="targetForm" method="get" action="">
+	<table>
+		<col width="2%" />
+		<col width="12%" />
+		<col />
+		<col width="18%" />
+		<col width="14%" />
+		<thead>
+			<tr>
+				<th></th>
+				<th>Instance ID</th>
+				<th>Private/Public Address</th>
+				<th>Launch Time</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for instance in instances %}
+			<tr id="row-{{instance.id}}">
+				<td class="select"><input type="checkbox" id="checkbox-{{instance.id}}" name="target" value="{{instance.id}}" /></td>
+				<td class="select">{{instance.instance_id}}{% if instance.is_master %}<span class="hadoop-master" title="This instance is the Hadoop master node."> (Hadoop Master)</span>{% endif %}</td>
+				<td class="publicDns"><span id="dns-{{instance.id}}"></span></td>
+				<td class="launchTime"><span id="launchtime-{{instance.id}}"></span></td>
+				<td class="state"><span id="state-{{instance.id}}" class="state">checking...</span></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<input type="hidden" name="action" value="" />
+	</form>
+	{% if is_staff %}
+	<div id="dialog-addInstances" class="ui-widget" style="display:none">
+		<p>Restore missing instances, or increase the number of instances allowed for this team.</p>
+		<form id="form-addInstances" method="post" action="">
+			<table>
+				{% print_form_as_table add_instances_form %}
+			</table>
+		</form>
+	</div>
+	{% endif %}
+{% endblock %}

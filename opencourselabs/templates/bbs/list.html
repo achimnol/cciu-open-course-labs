@@ -1,0 +1,40 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% block title %}{{block.super}} - BBS: {{labsite.title}}{% endblock %}
+{% block pageid %}labsite-bbs-list{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>BBS: {% if board.title == "default" %}Lab Board{% else %}{{board.title}}{% endif %}</h2>
+	<table class="articles">
+		<col />
+		<col width="23%" />
+		<col width="22%" />
+		<thead>
+			<th class="title">Title</th>
+			<th>Author</th>
+			<th>Date</th>
+		</thead>
+		<tbody>
+		{% for item in article_list %}
+			<tr{% if item.is_notice %} class="notice"{% endif %}>
+				<td class="title"><a href="{% url labsite:bbs-view labsite.url_key,board.id,item.id %}{% if page %}?page={{page}}{% endif %}">{{item.title}}</a>{% if item.comment_count > 0 %} <span class="count-comments">[{{item.comment_count}}]</span>{% endif %}</td>
+				<td>{% if item.author.userprofile.real_name %}{{item.author.userprofile.real_name}}{% else %}{{item.author}}{% endif %}</td>
+				<td>{{item.written_at}}</td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="3">No articles.</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<div id="page-operations">
+		<ul>
+			<li><a id="operation-write" class="button" href="{% url labsite:bbs-write labsite.url_key,board.id %}">Write</a>
+		</ul>
+	{% include 'snippets/paginator.html' %}
+	</div>
+{% endblock %}

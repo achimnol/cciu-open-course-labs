@@ -1,0 +1,43 @@
+[
+	{
+		"pk": 1,
+		"model": "labsite.newrequest",
+		"fields": {
+			"creator": 10,
+			"title": "Test Request",
+			"course": "CS101",
+			"description": "blah",
+			"num_vm": 100,
+            "cloud": "nexr-vc3",
+			"additional_question1": "What is your WOW id?",
+			"additional_question2": "Enrollment key",
+			"period_begin": "2009-06-01",
+			"period_end": "2009-08-31",
+			"contact_cellphone": "012-3456-7890",
+			"contact_alternative": "042-350-9999",
+			"status": 0
+		}
+	},
+	{
+		"pk": 1,
+		"model": "labsite.labsite",
+		"fields": {
+			"url_key": "kaist-abcdef",
+			"owner": 10,
+			"title": "Hadoop Practice",
+			"course": "CS401",
+			"description": "Wow Great!",
+			"organization": "kaist",
+			"num_vm": 50,
+            "cloud": "nexr-vc3",
+			"additional_question1": "Student ID",
+			"additional_question2": "Real Name",
+			"created_at": "2009-06-11 02:34:56",
+			"period_begin": "2009-06-15",
+			"period_end": "2009-08-31",
+			"is_active": true,
+			"contact_cellphone": "012-345-6789",
+			"contact_alternative": "042-000-0000"
+		}
+	}
+]

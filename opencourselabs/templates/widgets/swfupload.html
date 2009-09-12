@@ -1,0 +1,16 @@
+<div id="{{name}}_container"></div>
+<script type="text/javascript">
+var URL_BASE = '/media';
+$(document).ready(function() {
+	$('#{{name}}_container').fileUpload({
+		uploadUrl: '/repository/temp-uploader/save',
+		removeUrl: '/repository/temp-uploader/remove',
+		keyFieldName: '{{name}}',
+		extraParams: {
+			{{session_name}}: $.cookie('{{session_name}}')
+		},
+		fileSizeLimit: '5mb',
+		debug: {% if debug %}true{% else %}false{% endif %}
+	});
+});
+</script>

@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+table#labsite-join-request-list p.additional-question {
+	font-size: 0.9em;
+	color: #666;
+	margin: 0.2em;
+}
+
+body#page-labsite-main #content strong {
+	font-style: italic;
+	font-weight: bold;
+}
+
+table#labsite-member-list td.email {
+	padding-left: 2em;
+}
+table#labsite-member-list td.name,
+table#labsite-member-list td.privilege {
+	text-align: center;
+}
+table#labsite-team-list td.num-vm {
+	text-align: center;
+}
+table#labsite-team-list td.name,
+table#labsite-team-list td.members {
+	padding-left: 1.5em;
+}
+
+#requestForm th {
+	width: 150px;
+}
+#requestForm #id_title {
+	width: 18em;
+}
+#requestForm #id_course {
+	width: 8em;
+}
+#requestForm #id_num_vm,
+#requestForm #id_num_ip {
+	width: 5em;
+}
+#requestForm #id_contact_cellphone,
+#requestForm #id_contact_alternative {
+	width: 9em;
+}
+#page-labsite-teams .notify-container {
+	margin-bottom: -32px;
+}
+
+body#page-labsite-assignment-submit .ui-checkboxlist {
+	height: 90px;
+}
+
+body#page-labsite-assignment-detail ul.attachments li.empty,
+body#page-labsite-assignment-submission-detail ul.attachments li.empty {
+	display: block;
+	opacity: 0.5;
+	-moz-opacity: 0.5;
+	-webkit-opacity: 0.5;
+}
+
+.operation.associateIP {
+	background-image: url(../images/icon-chain.png);
+}
+.operation.releaseIP {
+	background-image: url(../images/icon-unchain.png);
+}
+#operation-refresh .ui-icon {
+	background-image: url(../images/icon-refresh.png);
+}
+#operation-reboot .ui-icon {
+	background-image: url(../images/icon-reboot.png);
+}
+#operation-getKey .ui-icon {
+	background-image: url(../images/icon-key.png);
+}
+#operation-viewJobTracker .ui-icon {
+	background-image: url(../images/icon-monitor.png);
+}
+#operation-addInstances .ui-icon {
+	background-image: url(../images/icon-plus.png);
+}
+#operation-deleteInstances .ui-icon {
+	background-image: url(../images/icon-minus.png);
+}

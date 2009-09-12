@@ -1,0 +1,11 @@
+{% autoescape off %}
+Dear {{you.get_profile.real_name}},
+Your join request to the course lab {{labsite.get_organization_display}} {{labsite.course}} {{labsite.title}} has been approved. You are now a {{role}} in this course lab.
+
+ * Course Lab : {{labsite.get_organization_display}} {{labsite.course}} - {{labsite.title}}
+ * Applied Role : {{role}}
+
+Thanks for using our service!
+
+- NexR CCI:U Team
+{% endautoescape %}

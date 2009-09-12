@@ -1,0 +1,21 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load forms %}
+{% block title %}{{block.super}} - Create Team{% endblock %}
+{% block pageid %}labsite-team-create{% endblock %}
+{% block content %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Create Team</h2>
+	<div class="form-container">
+		{% include 'snippets/message_error.html' %}
+		<form id="createTeamForm" method="post" action="">
+			<table>
+				{% print_form_as_table create_form %}
+				<tr class="form-controls"><th></th><td class="submit-area"><button type="submit">Create</button></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

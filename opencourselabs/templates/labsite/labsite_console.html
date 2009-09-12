@@ -1,0 +1,121 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% block title %}{{block.super}} - Lab Console{% endblock %}
+{% block pageid %}labsite-console{% endblock %}
+{% block extra_headers %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{{block.super}}
+<link rel="stylesheet" type="text/css" href="/media/css/console.css" />
+<script type="text/javascript" src="/media/js/console.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+var is_staff = {% if is_staff %}true{% else %}false{% endif %};
+function updateToolbarState() {
+	var num_selected_instances = 0;
+	$('td.select :checkbox').each(function() {
+		num_selected_instances += $(this).attr('checked') ? 1 : 0;
+	});
+	if (num_selected_instances > 0)
+		$('#operation-reboot').enable().removeAttr('title');
+	else
+		$('#operation-reboot').disable().attr('title', 'Select one or more instances to reboot.');
+}
+$(document).ready(function() {
+	LoadingIndicator.inject('#page-operations');
+	$('#operation-refresh').click(function(ev) {
+		ev.preventDefault();
+		if ($(this).attr('disabled')) return;
+		refresh();
+	});
+	$('#operation-reboot').click(function(ev) {
+		ev.preventDefault();
+		if ($(this).attr('disabled')) return;
+		reboot();
+	});
+	$('td.select').click(function(ev) {
+		var id = $(this).parent().attr('id').split('-')[1];
+		var checked = $('#checkbox-' + id).attr('checked');
+		$('#checkbox-' + id).attr('checked', checked ? false : true);
+		toggleInstance(id);
+		updateToolbarState();
+		ev.stopPropagation();
+	});
+	$('td.select :checkbox').click(function(ev) {
+		var id = $(this).val();
+		toggleInstance(id);
+		updateToolbarState();
+		ev.stopPropagation();
+	});
+	// Some browsers may have persistent checkbox status when reloaded.
+	$.each($('td.select :checkbox'), function(index) {
+		var id = $(this).attr('id').split('-')[1];
+		toggleInstance(id);
+	});
+	updateToolbarState();
+	$('#filterByTeam').change(function(ev) {
+		location.href = '?team=' + $(this).val();
+	});
+	window.setTimeout(function(timer_id) { refresh(); }, 100);
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Manage Instances</h2>
+	<div id="page-operations">
+		<ul>
+			<li><select id="filterByTeam" name="team">
+				<option value="-1"{% if current_team == "-1" %} selected="selected"{% endif %}>All Teams</option>
+			{% for team in teams %}
+				<option value="{{team.id}}"{% if current_team == team.id %} selected="selected"{% endif %}>{{team.name}}</option>
+			{% endfor %}
+			</select></li>
+			<li><a id="operation-refresh" class="button" href="?action=describe"><span class="ui-icon"></span>Refresh</a></li>
+			<li><a id="operation-reboot" class="button" href="?action=reboot"><span class="ui-icon"></span>Reboot</a></li>
+			<li><a id="operation-help" href="/help/ssh/" title="Show help on using SSH with the private key"><img src="/media/images/icon-help.png" alt="Help" /></a></li>
+		</ul>
+	</div>
+	<form id="targetForm" method="get" action="">
+	<table>
+		<col width="2%" />
+		<col width="12%" />
+		<col />
+		<col width="18%" />
+		<col />
+		<col width="12%" />
+		<thead>
+			<tr>
+				<th></th>
+				<th>Instance ID</th>
+				<th>Private/Public Address</th>
+				<th>Launch Time</th>
+				<th>Team</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for instance in instance_list %}
+			<tr id="row-{{instance.id}}">
+				<td class="select"><input type="checkbox" id="checkbox-{{instance.id}}" name="target" value="{{instance.id}}" /></td>
+				<td class="select">{{instance.instance_id}}{% if instance.is_master %}<span class="hadoop-master" title="This instance is the Hadoop master node."> (Hadoop Master)</span>{% endif %}</td>
+				<td class="publicDns"><span id="dns-{{instance.id}}"></span></td>
+				<td class="launchTime"><span id="launchtime-{{instance.id}}"></span></td>
+				<td class="team"><a href="{% url labsite:team-console labsite.url_key, instance.belongs_to.belongs_to.id %}">{{instance.belongs_to.belongs_to.name}}</a></td>
+				<td class="state"><span id="state-{{instance.id}}" class="state">checking...</span></td>
+			</tr>
+		{% empty %}
+			<tr>
+				<td colspan="6">No instances.</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	</form>
+	{% include 'snippets/paginator.html' %}
+{% endblock %}

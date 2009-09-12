@@ -1,0 +1,24 @@
+{% extends 'labsite/base_lab.html' %}
+{% load forms %}
+{% block title %}{{block.super}} - New Assignment{% endblock %}
+{% block pageid %}labsite-assignment-create{% endblock %}
+{% block extra_headers %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="/media/css/labsite.css" />
+{{create_form.media}}
+{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Create Assignment</h2>
+	<div class="form-container">
+		{% include 'snippets/message_error.html' %}
+		<form id="createForm" method="post" action="">
+			<table>
+				{% print_form_as_table create_form %}
+				<tr class="form-controls"><th></th><td><input type="submit" class="button" value="Create" /></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

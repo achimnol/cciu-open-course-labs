@@ -1,0 +1,48 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% block title %}{{block.super}} - List of Members{% endblock %}
+{% block pageid %}labsite-members{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+<link rel="stylesheet" type="text/css" href="/media/css/labsite.css" />
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	$('.operation.delete').click(function() { return confirm('Are you sure?'); });
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Member List</h2>
+	{% include 'snippets/message.html' %}
+	<table id="labsite-member-list">
+		<col width="40%" />
+		<col />
+		<col width="15%" />
+		<col width="12%" />
+		<thead>
+			<tr>
+				<th class="name">Email</th>
+				<th class="name">Real Name</th>
+				<th class="privilege">Privilege</th>
+				{% if is_staff %}<th class="row-operations">Actions</th>{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+		{% for item in member_list %}
+			<tr>
+				<td class="email">{{item.email}}</td>
+				<td class="name">{{item.get_profile.real_name}}</td>
+				<td class="privilege">{% if item.is_staff %}staff{% endif %}{% if item.is_student %}student{% endif %}</td>
+				{% if is_staff %}<td class="row-operations">{% ifnotequal user item %}<a class="operation delete" title="Delete" href="{{ labsite_url }}manage/members/delete/?user={{ item.id }}">Delete</a></td>{% endifnotequal %}{% endif %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

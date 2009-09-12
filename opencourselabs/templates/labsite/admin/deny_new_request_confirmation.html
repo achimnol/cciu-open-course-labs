@@ -1,0 +1,28 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<a href="../../">{% trans "Home" %}</a> &rsaquo;
+	<a href="../">Labsite</a> &rsaquo;
+	<a href="./">New requests</a> &rsaquo;
+	Deny a new labsite request
+</div>
+{% endblock %}
+{% block content %}
+	<p>Are you sure to deny the selected request and create a labsite for it?<p>
+	<form action="" method="post">
+		<div>
+			<ul>
+				<li><strong>Organization : {{ request.get_organization_display }}</strong></li>
+				<li><strong>Course : {{ request.course }}</strong></li>
+				<li><strong>Title : {{ request.title }}</strong></li>
+				<li><a href="/admin/labsite/newrequest/{{ request.pk }}/">See more details or edit</a></li>
+			</ul>
+			{{ approval_form.as_p }}
+			<input type="hidden" name="{{ action_checkbox_name }}" value="{{ request.pk }}" />
+			<input type="hidden" name="action" value="deny_request" />
+			<input type="hidden" name="post" value="yes" />
+			<p><input type="submit" value="Yes, I'm sure." /></p>
+		</div>
+	</form>
+{% endblock %}

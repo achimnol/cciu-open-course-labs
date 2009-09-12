@@ -1,0 +1,27 @@
+[
+	{
+		"pk": 1,
+		"model": "auth.user",
+		"fields": {"username": "admin", "password": "sha1$12345$64fedbce5b61b2b9d9f488f711079504a1c733d0", "email": "test-admin@nexr.co.kr", "is_staff": true, "is_active": true, "is_superuser": true, "date_joined": "2009-06-01 01:23:45"}
+	},
+	{
+		"pk": 10,
+		"model": "auth.user",
+		"fields": {"username": "test-user@nexr.co.kr", "password": "sha1$12345$b9059163479873b9411894a89af957c2c9c34fe4", "email": "test-user@nexr.co.kr", "is_staff": false, "is_active": true, "is_superuser": false, "date_joined": "2009-06-01 01:23:45"}
+	},
+	{
+		"pk": 11,
+		"model": "auth.user",
+		"fields": {"username": "student-user@nexr.co.kr", "password": "sha1$12345$b9059163479873b9411894a89af957c2c9c34fe4", "email": "student-user@nexr.co.kr", "is_staff": false, "is_active": true, "is_superuser": false, "date_joined": "2009-06-01 01:23:45"}
+	},
+	{
+		"pk": 1,
+		"model": "account.userprofile",
+		"fields": {"user": 10, "organization": "kaist", "real_name": "testuser"}
+	},
+	{
+		"pk": 2,
+		"model": "account.userprofile",
+		"fields": {"user": 11, "organization": "kaist", "real_name": "studentuser"}
+	}
+]

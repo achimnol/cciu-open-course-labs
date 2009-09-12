@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{{ block.super }} - Home{% endblock %}
+{% block extra_headers %}
+	<link rel="stylesheet" type="text/css" href="/media/css/main.css" />
+	<!--[if lte IE 6]>
+	<link rel="stylesheet" type="text/css" href="/media/css/main.ie6.css" />
+	<![endif]-->
+{% endblock %}
+{% block pageid %}home{% endblock %}
+{% block extra_header_content %}
+	<div id="main-welcome">
+		<h4>WELCOME TO CCI:U!</h4>
+		<p>CCI:U is a web-based cloud computing provider for universities.</p>
+		<p><a id="action-signIn" href="/login/">Sign-In</a> <a id="action-createAccount" href="/account/create/">Create Account</a></p>
+	</div>
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
+{% block content %}
+	<h2>What is CCI:U?</h2>
+	{% if user.is_authenticated %}
+	<!--[if lte IE 6]>
+	<div id="IE6-MUST-DIE">
+		<p><strong>Notice:</strong> Your web browser is outdated. If you upgrade to mordern browsers, this site will work better for you.</p>
+		<p>Choose a browser: <a href="http://www.mozilla.com">Mozilla Firefox</a>, <a href="http://google.com/chrome/">Google Chrome</a>, or <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Internet Explorer 8</a>.</p>
+	</div>
+	<![endif]-->
+	{% endif %}
+	<p>CCI:U <em>(Cloud-Computing Initiative for Universities)</em> provides a comfortable cloud-computing environments to universities.
+	Professors, teaching assisstants, and students have their private web consoles to access and control virtualized instances that are reserved for study and research.</p>
+	<div class="infobox" id="home-info-labsites">
+		<img src="/media/images/icon-textedit.png" alt="" />
+		<h3>Course Labs <a class="more" href="/lab/" title="Go to lab sites section.">(more)</a></h3>
+		<p>For each granted course, we provide you a small private homepage including web consoles, simple web boards, and private/public file repository.
+		This lets you conduct and take your course with ease.</p>
+	</div>
+	<div class="infobox" id="home-info-hadoop">
+		<img src="/media/images/icon-hadoop.png" alt="" />
+		<h3>Support for Hadoop <a class="more" href="http://hadoop.apache.org" title="Go to Apache Hadoop project.">(more)</a></h3>
+		<p>Not just only virtualized instances, we also offer automatic deployment of Hadoop on those instances.
+		You don't have to think about how to set up a Hadoop cluster.
+		Just one-click to run your MapReduce modules.</p>
+	</div>
+	<div class="infobox" id="home-info-hadoopsource">
+		<img src="/media/images/icon-hadoopsource.png" alt="" />
+		<h3>Hadoop Source <a class="more" href="http://www.hadoopsource.com" title="Go to Hadoop Source website.">(more)</a></h3>
+		<p>Course staffs and students can publish their works to Hadoop Source for sharing with others.
+		This benefits MapReduce researchers all around the world as well as you.</p>
+	</div>
+{% endblock %}

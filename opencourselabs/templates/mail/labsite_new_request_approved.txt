@@ -1,0 +1,14 @@
+{% autoescape off %}
+Dear {{you.get_profile.real_name}},
+Your course lab creation request (submitted at {{request.created_at|date:"Y-m-d H:i:s"}}) has been approved.
+
+ * Organization : {{labsite.get_organization_display}}
+ * Title : {{labsite.title}}
+ * Course : {{labsite.course}}
+ * Usage period : from {{labsite.period_begin|date:"Y-m-d"}} to {{labsite.period_end|date:"Y-m-d"}}
+ * URL : http://{{host}}{% url labsite:dashboard labsite.url_key %}
+
+Thanks for using our service!
+
+- NexR CCI:U Team
+{% endautoescape %}

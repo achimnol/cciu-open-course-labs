@@ -1,0 +1,67 @@
+@charset "utf-8";
+
+body#page-home #main-welcome {
+	position: absolute;
+	top: 100px;
+	left: 450px;
+	color: white;
+}
+
+body#page-home #main-welcome h4 {
+	font-weight: normal;
+	font-size: 1.4em;
+	font-family: "Helvetica", "Arial", sans-serif;
+}
+
+body#page-home #main-welcome p {
+	margin: 12px 0;
+	line-height: 1.0em;
+}
+
+body#page-home a#action-createAccount {
+	display: inline-block;
+	background: url(../images/button-main-createAccount.png) no-repeat left top;
+	font-size: 1px;
+	padding-left: 127px;
+	width: 0;
+	height: 23px;
+	overflow: hidden;
+}
+
+body#page-home a#action-signIn {
+	display: inline-block;
+	background: url(../images/button-main-signIn.png) no-repeat left top;
+	font-size: 1px;
+	padding-left: 73px;
+	width: 0;
+	height: 23px;
+	overflow: hidden;
+}
+
+.infobox {
+	margin-left: -80px;
+	padding-left: 80px;
+	min-height: 85px;
+	position: relative;
+	background: url(/media/images/bg-shadow-from-left.png) no-repeat 60px 0;
+}
+.infobox img {
+	position: absolute;
+	top: 12px;
+	left: 0;
+}
+.infobox h3:hover {
+}
+#home-info-hadoop {
+	margin-left: -108px;
+	padding-left: 108px;
+	background-position: 88px 0;
+}
+#home-info-hadoop img {
+	top: 8px;
+}
+#home-info-hadoopsource {
+	margin-left: -108px;
+	padding-left: 108px;
+	background-position: 88px 0;
+}

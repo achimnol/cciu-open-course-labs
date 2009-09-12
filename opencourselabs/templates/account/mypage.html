@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load forms %}
+{% load smartif %}
+{% block title %}{{block.super}} - My Page{% endblock %}
+{% block pageid %}account-mypage{% endblock %}
+{% block content %}
+	<h2>My Page</h2>
+	<p>See labsites and teams that you belong to.</p>
+	<ul>
+	{% for team in teams %}
+		<li><a href="{% url labsite:dashboard team.belongs_to.url_key %}">{{team.belongs_to.get_organization_display}} {{team.belongs_to.course}} - {{team.belongs_to.title}}</a> / <a href="{% url labsite:team-console team.belongs_to.url_key team.id %}">{{team.name}}</a></li>
+	{% endfor %}
+	{% for labsite in labsites %}
+		<li><a href="{% url labsite:dashboard labsite.url_key %}">{{labsite.get_organization_display}} {{labsite.course}} - {{labsite.title}}</a></li>
+	{% endfor %}
+	</ul>
+{% endblock %}

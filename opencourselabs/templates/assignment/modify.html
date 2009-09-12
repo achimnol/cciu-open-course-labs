@@ -1,0 +1,33 @@
+{% extends 'labsite/base_lab.html' %}
+{% load forms %}
+{% block title %}{{block.super}} - Modify Assignment{% endblock %}
+{% block pageid %}labsite-assignment-modify{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+{{modify_form.media}}
+{% endblock %}
+{% block content %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2>Modify Assignment</h2>
+	<div class="form-container">
+		{% include 'snippets/message_error.html' %}
+		<form id="modifyForm" method="post" action="">
+			<table>
+				<col width="25%" />
+				<col />
+				{% print_form_as_table modify_form %}
+				<tr>
+					<th><label>Current attachments :</label></th>
+					<td>
+						{% for item in assignment.attachments.all %}
+						<a href="{% url labsite:assignment-download labsite.url_key %}{{item.name|urlencode}}?assignment_id={{assignment.id}}&amp;file_id={{item.id}}">{{item.name}}</a>{% if not forloop.last %},{% endif %}
+						{% empty %}(None){% endfor %}
+					</td>
+				</tr>
+				<tr><th></th><td><input type="submit" class="button" value="Modify" /></td></tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}

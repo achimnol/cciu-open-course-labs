@@ -1,0 +1,4 @@
+	{% if warn_msg %}
+		<div class="notify-container"><div class="notify warning">{{warn_msg|linebreaksbr}}</div></div>
+		<script type="text/javascript">Notifier.notify('', $('.notify'));</script>
+	{% endif %}

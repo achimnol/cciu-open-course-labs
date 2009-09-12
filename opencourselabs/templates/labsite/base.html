@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block pageid %}labsite-main{% endblock %}
+{% block pageclass %}with-sidebar{% endblock %}
+{% block extra_headers %}
+<link rel="stylesheet" type="text/css" href="/media/css/labsite.css" />
+{% endblock %}
+{% block sidebar %}
+	<div id="sidebar">
+		<ul>
+			<li><a href="/lab/browse/">Browse</a></li>
+			<li><a href="/lab/request/new/">New Course Lab</a></li>
+		</ul>
+	</div>
+{% endblock %}

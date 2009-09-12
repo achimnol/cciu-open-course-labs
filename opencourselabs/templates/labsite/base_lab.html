@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load row_perms %}
+{% block pageclass %}with-sidebar{% endblock %}
+{% block extra_headers %}
+<link rel="stylesheet" type="text/css" href="/media/css/labsite.css" />
+{% endblock %}
+{% block sidebar %}
+{% url labsite:dashboard labsite.url_key as labsite_url %}
+{% has_row_perm user labsite "staff" as is_staff %}
+{% has_row_perm user labsite "student" as is_student %}
+	<div id="sidebar">
+		<div class="sidebar-module">
+			<ul>
+				{% if is_staff %}
+				<li>
+					<a href="{{ labsite_url }}">Course Lab Home</a>
+					<ul>
+						<li><a href="{{ labsite_url }}manage/instances/">Manage instances</a></li>
+						<li><a href="{{ labsite_url }}manage/teams/">Manage teams</a></li>
+						<li><a href="{{ labsite_url }}members/">View member list</a></li>
+						<li><a href="{{ labsite_url }}manage/join-requests/">View join requests</a></li>
+						<li><a href="{{ labsite_url }}assignment/list/">Assignments</a></li>
+						<li><a href="{{ labsite_url }}manage/settings/">Settings</a></li>
+					</ul>
+				</li>
+				{% endif %}{% if is_student and not user.is_superuser %}
+				<li>
+					<a href="{{ labsite_url }}">Course Lab Home</a>
+					<ul>
+						{% if user_team %}<li><a href="{{ labsite_url }}teams/{{ user_team.id }}/">My Team's Console</a></li>{% endif %}
+						<li><a href="{{ labsite_url }}assignment/list/">Assignments</a></li>
+						<li><a href="{{ labsite_url }}teams/">View teams</a></li>
+						<li><a href="{{ labsite_url }}members/">View lab members</a></li>
+					</ul>
+				</li>
+				{% endif %}{% if not is_staff and not is_student %}
+				<li><a href="{{ labsite_url }}join/">Join</a></li>
+				{% endif %}
+				<li><a href="{{ labsite_url }}bbs/">BBS</a></li>
+			</ul>
+		</div>
+	</div>
+{% endblock %}

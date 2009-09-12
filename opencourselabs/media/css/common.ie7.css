@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+.notify {
+	display: block;
+	width: 60%;
+	zoom: 1;
+}
+
+table {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.article {
+	border: 1px solid #ddd;
+}
+
+button, input[type=submit] {
+	overflow: visible;
+}
+
+button .ui-icon,
+.button .ui-icon {
+	display: block;
+	float: left;
+	margin-top: 7px;
+	overflow: visible;
+}
+

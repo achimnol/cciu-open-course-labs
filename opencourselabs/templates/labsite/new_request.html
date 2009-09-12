@@ -1,0 +1,48 @@
+{% extends 'labsite/base.html' %}
+{% load forms %}
+{% block title %}{{block.super}} - New Course Lab{% endblock %}
+{% block pageid %}labsite-newrequest{% endblock %}
+{% block extra_headers %}
+{{ block.super }}
+{{ request_form.media }}
+<script type="text/javascript">
+//<![CDATA[
+function showAuthFields(show) {
+	if (show) {
+		$('#id_access_key').parent().parent().show();
+		$('#id_secret_key').parent().parent().show();
+	} else {
+		$('#id_access_key').parent().parent().hide();
+		$('#id_secret_key').parent().parent().hide();
+	}
+}
+$(document).ready(function() {
+	if ($('#id_cloud').val() == 'amazon-ec2')
+		showAuthFields(true);
+	else
+		showAuthFields(false);
+	$('#id_cloud').change(function(ev) {
+		switch ($(this).val()) {
+		case 'amazon-ec2':
+			showAuthFields(true);
+			break;
+		default:
+			showAuthFields(false);
+		}
+	});
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+<h2>Request to create a new course lab</h2>
+<div class="form-container">
+	{% include 'snippets/message_error.html' %}
+	<form id="requestForm" method="post" action="/lab/request/new/">
+		<table>
+			{% print_form_as_table request_form %}
+			<tr><th></th><td class="submit-area"><button type="submit">Send Request</button></td></tr>
+		</table>
+	</form>
+</div>
+{% endblock %}

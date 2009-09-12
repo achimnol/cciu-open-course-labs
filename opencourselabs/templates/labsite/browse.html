@@ -1,0 +1,60 @@
+{% extends 'labsite/base.html' %}
+{% load smartif %}
+{% block title %}{{block.super}} - Browse Course Labs{% endblock %}
+{% block pageid %}labsite-browse{% endblock %}
+{% block extra_headers %}
+{{block.super}}
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+	$('#id_organization').change(function() {
+		if (this.value == 'all')
+			$('#id_course').val('all');
+	});
+});
+//]]>
+</script>
+{% endblock %}
+{% block content %}
+	<h2>Browse Course Labs</h2>
+	<form id="browseForm" method="get" action="/lab/browse/">
+		<label for="id_organization">Organization:</label> {{ browse_form.organization }}
+		{% if course_list %}
+			| <label for="id_course">Course:</label> <select id="id_course" name="course">
+				<option value="all"{% if queries.course == "all" %} selected="selected"{% endif %}>All</option>
+			{% for course in course_list %}
+				<option value="{{course.course}}"{% if queries.course == course.course %} selected="selected"{% endif %}>{{course.course}}</option> 
+			{% endfor %}
+			</select>
+		{% endif %}
+		| <label for="id_status">Status:</label> {{ browse_form.status }}
+		<button type="submit" style="line-height:18px; height:21px; margin-left:3px; margin-top:-2px">Filter</button>
+	</form>
+	<p>Total {{hits}} course labs.</p>
+	<table id="labsites-list">
+		<col width="20%" />
+		<col width="15%" />
+		<col width="45%" />
+		<col width="20%" />
+		<thead>
+			<tr>
+				<th>Organization</th>
+				<th>Course</th>
+				<th>Title</th>
+				<th class="row-operations">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for item in labsite_list %}
+			{% url labsite:dashboard item.url_key as item_url %}
+			<tr>
+				<td>{{item.get_organization_display}}</td>
+				<td>{{item.course}}</td>
+				<td><a href="{{item_url}}">{{item.title}}</a></td>
+				<td class="row-operations">{% if item.is_active %}<a class="operation join" title="Join" href="{{item_url}}join/">Join</a>{% else %}(Inactive){% endif %}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	{% include 'snippets/paginator.html' %}
+{% endblock %}

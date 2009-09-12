@@ -1,0 +1,78 @@
+{% extends 'labsite/base_lab.html' %}
+{% load row_perms %}
+{% load smartif %}
+{% block title %}{{block.super}} - BBS: {{labsite.title}}{% endblock %}
+{% block pageid %}labsite-bbs-view{% endblock %}
+{% block extra_headers %}
+{{ block.super }}
+<script type="text/javascript">
+$(document).ready(function() {
+	$('a.operation.deleteComment').click(function(ev) {
+		if (confirm('Are you sure to delete this comment?'))
+			return true;
+		return false;
+	});
+	$('#operation-delete').click(function(ev) {
+		if (confirm('Are you sure to delete the current article?'))
+			return true;
+		return false;
+	});
+});
+</script>
+{% endblock %}
+{% block content %}
+{% has_row_perm user labsite "staff" as is_staff %}
+	<div id="breadcrumb">
+		<span class="breadcrumb-item">{{labsite.get_organization_display}}</span> &raquo; <span class="breadcrumb-item">{{labsite.course}} - {{labsite.title}}</span> &raquo;
+	</div>
+	<h2><a href="{% url labsite:bbs-list labsite.url_key,board.id %}{% if page %}?page={{page}}{% endif %}">BBS: {% if board.title == "default" %}Lab Board{% else %}{{board.title}}{% endif %}</a></h2>
+	<div class="article">
+		<h3>{{article.title}}</h3>
+		<div class="article-content">
+			<p>{{article.body|urlize|linebreaksbr}}</p>
+		</div>
+		<ul class="attachments">
+		{% for item in article.attachments.all %}
+			<li><a href="{% url labsite:bbs-attachment-download labsite.url_key,board.id %}{{item.name|urlencode}}?article_id={{article.id}}&amp;file_id={{item.id}}">{{item.name}}</a></li>
+		{% empty %}
+			<li class="empty">No attachments.</li>
+		{% endfor %}
+		</ul>
+		<div id="page-operations">
+			<ul>
+				<li><a class="button" href="{% url labsite:bbs-list labsite.url_key,board.id %}{% if page %}?page={{page}}{% endif %}">Back to List</a></li>
+				{% if user == article.author or is_staff %}
+				<li><a class="button" id="operation-modify" href="{% url labsite:bbs-modify labsite.url_key,board.id %}?id={{article.id}}{% if page %}&amp;page={{page}}{% endif %}">Modify</a></li>
+				<li><a class="button" id="operation-delete" href="{% url labsite:bbs-delete labsite.url_key,board.id %}?id={{article.id}}{% if page %}&amp;page={{page}}{% endif %}">Delete</a></li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+	<ul id="comments-for-article-{{article.id}}" class="comments">
+	{% for item in article.comment_set.all %}
+		<li>
+			<div class="comment-info">
+				<span class="author">{{item.author.get_profile.real_name}}</span> <span class="date">{{item.written_at|date:"Y-m-d H:i"}}</span>
+				{% if item.author == user or is_staff %}<a href="{% url labsite:bbs-comment labsite.url_key,board.id %}?action=delete&amp;article_id={{article.id}}&amp;id={{item.id}}{% if page %}&amp;page={{page}}{% endif %}" class="operation deleteComment">Delete</a>{% endif %}
+			</div>
+			<p>{{item.body|urlize|linebreaksbr}}</p>
+		</li>
+	{% empty %}
+		<li class="empty">No comments yet.</li>
+	{% endfor %}
+	</ul>
+	<div class="form-container comment">
+		<form id="commentForm" method="post" action="{% url labsite:bbs-comment labsite.url_key,board.id %}?action=add&amp;article_id={{article.id}}{% if page %}&amp;page={{page}}{% endif %}">
+			<table>
+				<tr>
+					<th><label for="commentForm-content">Leave comment :</label></th>
+					<td><textarea id="commentForm-content" name="content" rows="2" cols="75" style="width:auto; height:auto;"></textarea></td>
+				</tr>
+				<tr>
+					<th></th>
+					<td><input type="submit" class="inline-button" value="Write" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+{% endblock %}
