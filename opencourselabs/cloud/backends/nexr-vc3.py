@@ -30,7 +30,7 @@ from opencourselabs.utils.httplib import HTTPConnection
 from . import BaseAPI
 from .. import CloudException, CloudQueryException
 
-QUERYAPI_VERSION = '2009-04-04'
+QUERYAPI_VERSION = '2009-07-10'
 ISO8601_DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 SIGNATURE_ALGORITHM = 'HmacSHA1'
 SIGNATURE_VERSION = '2'
