@@ -95,7 +95,7 @@ function refresh(ids) {
 				if (state != 1600) {
 					var id = item.id;
 					if (item.elastic_ip) {
-						$('#dns-' + id).html('<span class="ip">' + item.private_dns + '</span> / <span class="ip">' + item.elastic_ip + '</span>');
+						$('#dns-' + id).html('<span class="ip">' + item.dns + '</span> / <span class="ip">' + item.elastic_ip + '</span>');
 						if (is_staff) {
 							$('#dns-' + id).append('&nbsp;')
 							.append(
@@ -105,7 +105,7 @@ function refresh(ids) {
 							);
 						}
 					} else {
-						$('#dns-' + id).html('<span class="ip">' + item.private_dns + '</span>');
+						$('#dns-' + id).html('<span class="ip">' + item.dns + '</span>');
 						if (is_staff) {
 							$('#dns-' + id).append('&nbsp;')
 							.append(
