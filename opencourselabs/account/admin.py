@@ -14,9 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Account model-admins for ACCI.
-"""
 
 from django.contrib import admin
 from django.contrib.auth.models import User

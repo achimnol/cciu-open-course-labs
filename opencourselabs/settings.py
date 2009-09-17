@@ -1,4 +1,4 @@
-# Django settings for acciweb project.
+# Django settings for CCI:U Open Course Labs project.
 
 # Copyright 2009, NexR (http://nexr.co.kr)
 #

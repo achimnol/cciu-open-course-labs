@@ -15,7 +15,7 @@
 # limitations under the License.
 
 """
-Account module for ACCI.
+Account main module.
 
 This row-level permission extension is come from jazzgoth's work here:
 http://code.google.com/p/django-granular-permissions/

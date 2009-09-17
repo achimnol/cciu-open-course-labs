@@ -15,7 +15,7 @@
 # limitations under the License.
 
 """
-Account models for ACCI.
+Account models.
 
 Row-level permission system is hired from jazzgoth's work here:
 http://code.google.com/p/django-granular-permissions/

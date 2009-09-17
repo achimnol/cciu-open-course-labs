@@ -1,10 +1,10 @@
 {% autoescape off %}
 Hi,
-Your account request to NexR ACCI has been received, but we have to verify your email address.
+Your account request to NexR CCI:U Open Course Labs has been received, but we have to verify your email address.
 
 To activate your account, please visit the following link: http://{{host}}/account/verify/?key={{key}}
 
 Thanks for using our service!
 
-- NexR ACCI Team
+- NexR CCI:U Team
 {% endautoescape %}
