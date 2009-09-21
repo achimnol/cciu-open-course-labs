@@ -31,7 +31,7 @@ class BackendAPI(BaseAPI):
 
     def run_instances(self, num, keypair_name, security_groups, image_id=None, instance_type=None):
         if image_id is None:
-            image_id = settings.EC2_DEFAULT_AMI
+            image_id = settings.EC2_DEFAULT_IMAGE
         if instance_type is None:
             instance_type = settings.EC2_DEFAULT_TYPE
         items = []
