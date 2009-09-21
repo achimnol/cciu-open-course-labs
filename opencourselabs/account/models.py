@@ -31,7 +31,7 @@ from django.contrib.flatpages.models import FlatPage
 
 class UserProfile(models.Model):
     user = models.OneToOneField('auth.User')
-    real_name = models.CharField(max_length=30, unique=True)
+    real_name = models.CharField(max_length=30)
     organization = models.CharField(max_length=60)
 
 class RegisterRequest(models.Model):

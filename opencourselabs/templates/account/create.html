@@ -9,6 +9,8 @@ $(document).ready(function() {
 	$('#login').submit(function() {
 		if ($('#id_password_check').val() != $('#id_password').val()) {
 			alert('The retyped password does not match. Please type it again.');
+			$('[type=submit]', this).enable();
+			window.setTimeout(function() { LoadingIndicator.hide(); }, 20);
 			return false;
 		}
 		return true;
@@ -36,5 +38,4 @@ $(document).ready(function() {
 				<tr><th></th><td><p>Already have a CCI:U account? <a href="/login/">Sign In.</a></p></td></tr>
 			</table>
 		</form>
-	</div>
-{% endblock %}
+	</div>{% endblock %}

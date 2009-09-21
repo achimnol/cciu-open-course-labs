@@ -23,6 +23,7 @@ import urllib
 import socket
 import sys
 from lxml import objectify
+from lxml.etree import XMLSyntaxError
 from urlparse import urlparse
 from django.conf import settings
 from opencourselabs.utils import iso8601
@@ -60,7 +61,10 @@ class BackendAPI(BaseAPI):
             #InstanceType=instance_type,
             **kwargs
         )
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'run_instance')
         if status == 200:
             result = {}
             instances = []
@@ -94,7 +98,10 @@ class BackendAPI(BaseAPI):
             InstanceType=instance_type,
             **kwargs
         )
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'create_instance_cluster')
         if status == 200:
             result = {}
             instances = []
@@ -127,7 +134,10 @@ class BackendAPI(BaseAPI):
             InstanceType=instance_type,
             **kwargs
         )
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'create_hadoop_cluster')
         if status == 200:
             result = {}
             instances = []
@@ -157,7 +167,10 @@ class BackendAPI(BaseAPI):
     def reboot_instances(self, instance_ids):
         kwargs = self._build_list_params('InstanceId', instance_ids)
         status, reason, body = self._run_query('RebootInstances', self.credentials, **kwargs)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'reboot_instances')
         if status == 200:
             return True
         else:
@@ -166,7 +179,10 @@ class BackendAPI(BaseAPI):
     def terminate_instances(self, instance_ids):
         kwargs = self._build_list_params('InstanceId', instance_ids)
         status, reason, body = self._run_query('TerminateInstances', self.credentials, **kwargs)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'terminate_instances')
         if status == 200:
             instances = []
             for item in response.instancesSet.iterchildren():
@@ -182,7 +198,10 @@ class BackendAPI(BaseAPI):
     def describe_instances(self, instance_ids):
         kwargs = self._build_list_params('InstanceId', instance_ids)
         status, reason, body = self._run_query('DescribeInstances', self.credentials, **kwargs)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'describe_instances')
         if status == 200:
             instances = []
             for reservation in response.reservationSet.iterchildren():
@@ -207,7 +226,10 @@ class BackendAPI(BaseAPI):
 
     def allocate_address(self):
         status, reason, body = self._run_query('AllocateAddress', self.credentials)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'allocate_address')
         if status == 200:
             return response.publicIp.text
         else:
@@ -218,7 +240,10 @@ class BackendAPI(BaseAPI):
             InstanceId=instance_id,
             PublicIp=public_ip
         )
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'associate_address')
         if status == 200:
             return True
         else:
@@ -226,7 +251,10 @@ class BackendAPI(BaseAPI):
 
     def disassociate_address(self, public_ip):
         status, reason, body = self._run_query('DisassociateAddress', self.credentials, PublicIp=public_ip)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'disassociate_address')
         if status == 200:
             return True
         else:
@@ -234,7 +262,10 @@ class BackendAPI(BaseAPI):
 
     def release_address(self, public_ip):
         status, reason, body = self._run_query('ReleaseAddress', self.credentials, PublicIp=public_ip)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'release_address')
         if status == 200:
             return True
         else:
@@ -242,7 +273,10 @@ class BackendAPI(BaseAPI):
 
     def create_keypair(self, name):
         status, reason, body = self._run_query('CreateKeyPair', self.credentials, KeyName=name)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'create_keypair')
         if status == 200:
             fingerprint = response.keyFingerprint.text
             material = response.keyMaterial.text
@@ -253,7 +287,10 @@ class BackendAPI(BaseAPI):
     def describe_keypairs(self, names):
         kwargs = self._build_list_params('KeyName', names)
         status, reason, body = self._run_query('DescribeKeyPairs', self.credentials, **kwargs)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'describe_keypair')
         if status == 200:
             keypairs = []
             for item in response.keySet.iterchildren():
@@ -267,7 +304,10 @@ class BackendAPI(BaseAPI):
 
     def delete_keypair(self, name):
         status, reason, body = self._run_query('DeleteKeyPair', self.credentials, KeyName=name)
-        response = objectify.fromstring(body)
+        try:
+            response = objectify.fromstring(body)
+        except XMLSyntaxError:
+            self._handle_failures(body, status, reason, 'delete_keypair')
         if status == 200:
             return True
         else:

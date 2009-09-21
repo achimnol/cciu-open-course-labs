@@ -21,7 +21,7 @@ from django.db import models
 from django.test import TestCase
 from .models import Directory, File
 from .models import get_or_create_directory, delete_directory
-from .fields import PickledObjectField
+from ..utils.fields import PickledObjectField
 
 class TestingModel(models.Model):
     pickle_field = PickledObjectField()

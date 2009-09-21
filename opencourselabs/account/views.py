@@ -42,13 +42,10 @@ def create(request):
             password = create_form.cleaned_data['password']
 
             try:
-                # Check uniqueness of real_name and email
-                try:
-                    UserProfile.objects.get(real_name__exact=real_name)
-                    User.objects.get(email__exact=email)
+                # Check uniqueness of email (real_name may be duplicated.)
+                existing_user = User.objects.filter(email__exact=email).count()
+                if existing_user > 0:
                     raise IntegrityError()
-                except (User.DoesNotExist, UserProfile.DoesNotExist):
-                    pass
 
                 # Generate a random key for this registration request.
                 available_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
@@ -83,7 +80,7 @@ def create(request):
                     'err_msg': err_msg,
                 }, context_instance=RequestContext(request))
             except IntegrityError:
-                err_msg = u'The real_name you entered is already used.'
+                err_msg = u'The email you have entered is already being used.'
             except Exception, e:
                err_msg = u'Sorry, we could not send the verfication email. (%s)' % e.message
         else:

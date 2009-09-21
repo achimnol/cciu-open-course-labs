@@ -190,7 +190,8 @@ def labsite_post_save_handler(sender, **kwargs):
         deactivated_instances = Instance.objects.filter(belongs_to__belongs_to__belongs_to=labsite)
         cloud = get_api(labsite.cloud, labsite.get_backend_credentials())
         try:
-            cloud.terminate_instances([instance.instance_id for instance in deactivated_instances])
+            if deactivated_instances.count() > 0:
+                cloud.terminate_instances([instance.instance_id for instance in deactivated_instances])
         except CloudQueryException, e:
             pass
         deactivated_instances.delete()
