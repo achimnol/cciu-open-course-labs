@@ -29,6 +29,30 @@ We have graciously used those, so hereby let us express thanks. :)</p>
 </ul>
 ]]></field>
 	</object>
+	<object pk="9" model="flatpages.flatpage">
+		<field type="CharField" name="url">/contributors/</field>
+		<field type="CharField" name="title">Contributors</field>
+		<field type="BooleanField" name="enable_comments">0</field>
+		<field type="BooleanField" name="registration_required">0</field>
+		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
+		<field type="TextField" name="content"><![CDATA[
+<h2>Contributors</h2>
+<p>CCI:U Open Course Labs is made by these folks.</p>
+<h3>Developers</h3>
+<ul>
+	<li>Joongi Kim</li>
+	<li>Jaewon Song</li>
+</ul>
+<!--h3>Web Design</h3>
+<ul>
+	<li></li>
+</ul-->
+<h3>Special Thanks to</h3>
+<ul>
+	<li>Jaesun Han</li>
+</ul>
+]]></field>
+	</object>
 	<object pk="100" model="flatpages.flatpage">
 		<field type="CharField" name="url">/help/</field>
 		<field type="CharField" name="title">Help</field>
