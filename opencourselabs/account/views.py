@@ -72,7 +72,7 @@ def create(request):
                 text_content = get_template('mail/account_verification.txt').render(mail_context)
                 html_content = get_template('mail/account_verification.html').render(mail_context)
                 msg = EmailMultiAlternatives(u'NexR CCI:U Account Verification', text_content,
-                    'no-reply@nexr.co.kr', [email])
+                    'no-reply@nexr.or.kr', [email])
                 msg.attach_alternative(html_content, 'text/html')
                 msg.send()
                 
@@ -82,7 +82,7 @@ def create(request):
             except IntegrityError:
                 err_msg = u'The email you have entered is already being used.'
             except Exception, e:
-               err_msg = u'Sorry, we could not send the verfication email. (%s)' % e.message
+                err_msg = u'Sorry, we could not send the verfication email. (%s)' % e.message
         else:
             err_msg = u'You have to fill the required fields with valid input.'
     else:

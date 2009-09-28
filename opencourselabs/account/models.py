@@ -34,6 +34,9 @@ class UserProfile(models.Model):
     real_name = models.CharField(max_length=30)
     organization = models.CharField(max_length=60)
 
+    def __unicode__(self):
+        return u'%s@%s' % (self.real_name, self.organization)
+
 class RegisterRequest(models.Model):
     key = models.CharField(max_length=32, unique=True)
     real_name = models.CharField(max_length=30, unique=True)
@@ -43,6 +46,9 @@ class RegisterRequest(models.Model):
 
     # We don't restrict organization in models, but its inputs are restricted by forms.
     organization = models.CharField(max_length=60)
+
+    def __unicode__(self):
+        return u'%s@%s: %s' % (self.real_name, self.organization, self.email)
 
     class Meta:
         verbose_name = 'User Registration Request'
