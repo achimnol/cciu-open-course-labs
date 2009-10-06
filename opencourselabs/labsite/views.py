@@ -530,6 +530,8 @@ def view_team_console(request, labsite, user_team, team_id):
                 'data': e.errors,
             })
     elif action == 'getKey':
+        if not request.user.has_row_perm(labsite, 'staff') and user_team.hide_private_key:
+            return HttpResponseForbidden()
         text = instance_group.private_key
         return respond_as_text(request, text)
     elif action == 'delete':

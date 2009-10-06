@@ -148,7 +148,7 @@ $(document).ready(function() {
 		<ul>
 			<li><a id="operation-refresh" class="button" href="?action=describe"><span class="ui-icon"></span>Refresh</a></li>
 			<li><a id="operation-reboot" class="button" href="?action=reboot"><span class="ui-icon"></span>Reboot</a></li>
-			<li><a id="operation-getKey" class="button" href="?action=getKey"><span class="ui-icon"></span>Get Private Key</a></li>
+			{% if is_staff or not user_team.hide_private_key %}<li><a id="operation-getKey" class="button" href="?action=getKey"><span class="ui-icon"></span>Get Private Key</a></li>{% endif %}
 			{% if instance_group.type == 1 %}
 			<li><a id="operation-viewJobTracker" class="button" href="http://{{instance_group.master.elastic_ip}}:50030"><span class="ui-icon"></span>Hadoop Job Tracker</a></li>
 			{% endif %}
