@@ -120,28 +120,25 @@ class BackendAPI(BaseAPI):
         else:
             self._handle_failures(response, status, reason, 'create_instance_cluster')
 
-    def create_hadoop_cluster(self, cluster_name, num, keypair_name, security_groups, image_id=None, instance_type=None):
+    def create_hadoop_cluster(self, cluster_name, num, keypair_name, security_groups, image_id=None, instance_type=None, master_instance_type=None):
         if image_id is None:
             image_id = settings.ICUBE_DEFAULT_HADOOP_IMAGE
-        if instance_type is None:
-            instance_type = settings.ICUBE_DEFAULT_TYPE
         kwargs = self._build_list_params('SecurityGroup', security_groups)
-        status, reason, body = self._run_query('CreateHadoopCluster', self.credentials,
-            ClusterName=cluster_name,
+        result = {}
+        instances = []
+
+        # Run the slave nodes.
+        status, reason, body = self._run_query('RunInstances', self.credentials,
             ImageId=image_id,
-            Count=num,
+            MinCount=num - 1,
+            MaxCount=num - 1,
             KeyName=keypair_name,
-            InstanceType=instance_type,
+            InstanceType=instance_type if instance_type else settings.ICUBE_DEFAULT_TYPE,
             **kwargs
         )
-        try:
-            response = objectify.fromstring(body)
-        except XMLSyntaxError:
-            self._handle_failures(body, status, reason, 'create_hadoop_cluster')
         if status == 200:
-            result = {}
-            instances = []
-            for item in response.instancesSet.iterchildren():
+            response_slaves = objectify.fromstring(body)
+            for item in response_slaves.instancesSet.iterchildren():
                 instances.append({
                     'instance_id': item.instanceId.text,
                     'state': (item.instanceState.code.pyval, item.instanceState.name.text),
@@ -151,11 +148,39 @@ class BackendAPI(BaseAPI):
                     'launch_index': item.amiLaunchIndex.pyval,
                     'launch_time': iso8601.parse_date(item.launchTime.text),
                 })
-            result['items'] = instances
-            result['master'] = response.masterId.text
-            return result
         else:
             self._handle_failures(response, status, reason, 'create_hadoop_cluster')
+
+        # Run the master node.
+        status, reason, body = self._run_query('RunInstances', self.credentials,
+            ImageId=image_id,
+            MinCount=1,
+            MaxCount=1,
+            KeyName=keypair_name,
+            InstanceType=master_instance_type if master_instance_type else settings.ICUBE_HADOOP_MASTER_TYPE,
+            **kwargs
+        )
+        if status == 200:
+            response_master = objectify.fromstring(body)
+            for item in response_master.instancesSet.iterchildren():
+                instances.append({
+                    'instance_id': item.instanceId.text,
+                    'state': (item.instanceState.code.pyval, item.instanceState.name.text),
+                    'image_id': item.imageId.text,
+                    'private_dns': item.privateDnsName.text,
+                    'dns': item.dnsName.text,
+                    'launch_index': item.amiLaunchIndex.pyval,
+                    'launch_time': iso8601.parse_date(item.launchTime.text),
+                })
+                result['master'] = item.instanceId.text
+        else:
+            self._handle_failures(response, status, reason, 'create_hadoop_cluster')
+        
+        result['items'] = instances
+
+        # The user should perform setup of Hadoop manually, bu running a given script 'install_hadoop.sh'.
+
+        return result
 
     def delete_instance_cluster(self, cluster_name):
         status, reason, body = self._run_query('DeleteInstanceCluster', self.credentials, ClusterName=cluster_name)
@@ -379,6 +404,7 @@ class BackendAPI(BaseAPI):
     @staticmethod
     def _handle_failures(response, status, reason, where):
         errors = []
+        requestId = '(None)'
         if isinstance(response, basestring):
             errors.append(u'XML syntax error in response. (maybe returned a HTML error page)')
         else:
@@ -387,9 +413,10 @@ class BackendAPI(BaseAPI):
                     errors.append((item.Code.text, item.Message.text))
                 except AttributeError:
                     pass
+            requestId = response.RequestID.text,
         raise CloudQueryException({
             'where': where,
-            'requestId': response.RequestID.text,
+            'requestId': requestId,
             'status': status,
             'reason': reason,
             'errors': errors,
