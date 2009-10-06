@@ -379,9 +379,11 @@ class BackendAPI(BaseAPI):
     @staticmethod
     def _handle_failures(response, status, reason, where):
         errors = []
+        requestId = '(None)'
         if isinstance(response, basestring):
             errors.append(u'XML syntax error in response. (maybe returned a HTML error page)')
         else:
+            requestId = response.RequestID.text
             for item in response.Errors.iterchildren():
                 try:
                     errors.append((item.Code.text, item.Message.text))
@@ -389,7 +391,7 @@ class BackendAPI(BaseAPI):
                     pass
         raise CloudQueryException({
             'where': where,
-            'requestId': response.RequestID.text,
+            'requestId': requestId,
             'status': status,
             'reason': reason,
             'errors': errors,
