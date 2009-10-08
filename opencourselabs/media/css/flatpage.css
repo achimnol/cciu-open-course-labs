@@ -29,5 +29,9 @@
 }
 
 #content-body li {
-	line-height: 1.2em;
+	line-height: 1.25em;
+}
+#content-body li p {
+	line-height: inherit;
+	margin-left: 0;
 }

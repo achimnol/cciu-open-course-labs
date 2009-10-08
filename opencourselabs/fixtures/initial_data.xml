@@ -129,13 +129,44 @@ You can convert it to PuTTY's private key format with the following instructions
 		<field to="sites.site" name="sites" rel="ManyToManyRel"><object pk="1" /></field>
 		<field type="TextField" name="content"><![CDATA[
 <h2>Help: Using Hadoop</h2>
-<p>If your team instances are deployed as a Hadoop cluster, you can use a fully initialized Hadoop environment.</p>
+	<p>If your team instances are deployed as a Hadoop cluster, you can use a fully distributed Hadoop environment.</p>
+<h3>How to set up a new Hadoop cluster</h3>
+	<p>When you create a new team with 'Use Hadoop' option, we provide instances on which Hadoop is installed.
+	However, automatic configuration is not supported currently, so we offer a configuration script meanwhile. <a href="/media/files/cciu-hadoop-setup.tar.gz">Click here to download.</a></p>
+	<ol>
+		<li><p>Upload the private key from team console as <code>myteam.key</code> to the master node via SFTP as root.
+		Make sure the key file has no permissions for group and other users, like 600.<br/>
+		(If you have set the password of root account, it would be more convenient.)</p>
+		<p><strong>Important:</strong> The master should be the <em>starred</em> instance because it has larger RAM/HDD and more cores for stability of namenodes.</p></li>
+		<li>Log in as root to the master.</li>
+		<li>Download (use wget) the configuration script from the above link, and unpack it.</li>
+		<li><p>Run <code>./install_hadoop.sh myteam.key MASTER SLAVE1 SLAVE2 SLAVE3 ...</code>.<br/>
+		This script will configure ssh connections between the master and slaves, and generate a suggested Hadoop configuration xmls.</p>
+		<p><strong>Important:</strong> The arguments <code>MASTER</code> and <code>SLAVE</code>s are the <em>private</em> IPs of your instances, like <code>10.8.x.y</code>.</p>
+		</li>
+		<li>Edit <code>./conf/MASTER/*-site.xml</code> as you want.</li>
+		<li>Run <code>./deploy_hadoop_conf.sh myteam.key MASTER</code> to deploy your configuration to slaves.</li>
+		<li>Start the Hadoop cluster after formatting the namenode. The script above will inform you the actual commands to run.<br/>
+		After that, check <code>http://MASTER:50030</code> for job tracker, <code>http://MASTER:50070</code> for HDFS status (if you let the ports default.)</li>
+	</ol>
+	<div class="ui-paragraph-message ui-state-highlight ui-corner-all">
+		<span class="ui-icon ui-icon-alert" style="float:left"></span>
+		<p>You have to allocate a public IP to the master node first.</p>
+	</div>
+	<div class="ui-paragraph-message ui-state-info ui-corner-all">
+		<span class="ui-icon ui-icon-info" style="float:left"></span>
+		<p>If you want to add more configuration files, such as pool allocation xml for the fair scheduler, you have to add it manually to <code>deploy_hadoop_conf.sh</code> to copy them to slaves also.</p>
+	</div>
+	<div class="ui-paragraph-message ui-state-info ui-corner-all">
+		<span class="ui-icon ui-icon-info" style="float:left"></span>
+		<p>If you want to change the configuration and update slaves, modify files in <code>./conf/MASTER</code> (<em>not</em> /etc/hadoop/conf) and run <code>./deploy_hadoop_conf.sh myteam.key MASTER</code> again.</p>
+	</div>
 <h3>Viewing the job tracker</h3>
-<p>You can view the job tracker provided by Hadoop with the following methods:
-<ul>
-	<li>Click <strong>[View Job Tracker]</strong> button at the team console page.</li>
-	<li>Connect to your master node directly with address like <strong><code>http://&lt;MasterIP&gt;:&lt;DefaultTrackerPort&gt;</code></strong>.</li>
-</ul>
+	<p>You can view the job tracker provided by Hadoop with one of the following methods:
+	<ul>
+		<li>Click <strong>[View Job Tracker]</strong> button at the team console page.</li>
+		<li>Connect to your master node directly with address like <strong><code>http://&lt;MasterIP&gt;:&lt;DefaultTrackerPort&gt;</code></strong>.</li>
+	</ul>
 	<div class="ui-paragraph-message ui-state-highlight ui-corner-all">
 		<span class="ui-icon ui-icon-alert" style="float:left"></span>
 		<p>You have to allocate a public IP to the master node first.</p>
@@ -146,10 +177,9 @@ You can convert it to PuTTY's private key format with the following instructions
 		Before requesting more instances to your team cluster, be sure that your important data and programs are backuped.</p>
 	</div>
 <h3>Running your MapReduce program</h3>
-<ol>
-	<li>Upload your program (jar) and data files to the master node via SSH or SFTP.</li>
-	<li>Run the following command: <code>TODO</code></li>
-</ol>
-		]]></field>
+	<ol>
+		<li>Upload your program (jar) and data files to the master node via SSH or SFTP.</li>
+		<li>Run the following command: <code>TODO</code></li>
+	</ol>]]></field>
 	</object>
 </django-objects>

@@ -170,7 +170,7 @@ class Team(models.Model):
     name = models.CharField(max_length=30)
     belongs_to = models.ForeignKey('labsite.Labsite')
     members = models.ManyToManyField('auth.User')
-    use_hadoop = models.BooleanField(help_text=u'This option automatically deploys a Hadoop cluster.')
+    use_hadoop = models.BooleanField(help_text=u'This option deploys a Hadoop cluster. To configure and run it, see the <a href="/help/hadoop/">help page.</a>')
     num_vm = models.IntegerField(default=0, verbose_name=u'Number of VMs')
     hide_private_key = models.BooleanField(default=False, help_text=u'Make students inaccessible to the private key to separate personal accounts.')
 
