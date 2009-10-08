@@ -72,11 +72,11 @@ class CreateTeamForm(forms.ModelForm):
     members = UserMultipleChoiceField('auth.User',
         widget=CheckboxListWidget,
     )
-    use_hadoop = forms.BooleanField(
-        help_text=u'Note: This is currently unsupported.<br/>We will create a Hadoop cluster requiring some manual setup.',
-        widget=forms.CheckboxInput(attrs={'disabled':'disabled'}),
-        required=False
-    )
+    #use_hadoop = forms.BooleanField(
+    #    help_text=u'Note: This is currently unsupported.<br/>We will create a Hadoop cluster requiring some manual setup.',
+    #    widget=forms.CheckboxInput(attrs={'disabled':'disabled'}),
+    #    required=False
+    #)
 
     class Meta:
         model = Team

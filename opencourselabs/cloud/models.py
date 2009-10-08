@@ -143,14 +143,14 @@ class InstanceGroup(models.Model):
 
     def terminate(self, delete_myself=True):
         cloud = self.backend.get_api()
-        if self.cluster_name is not None and len(self.cluster_name) > 0:
-            cloud.delete_instance_luster(self.cluster_name)
-            self.cluster_name = None
-        else:
-            instance_ids = []
-            for instance in self.instance_set.all():
-                instance_ids.append(instance.instance_id)
-            cloud.terminate_instances(instance_ids)
+        #if self.cluster_name is not None and len(self.cluster_name) > 0:
+        #    cloud.delete_instance_cluster(self.cluster_name)
+        #    self.cluster_name = None
+        #else:
+        instance_ids = []
+        for instance in self.instance_set.all():
+            instance_ids.append(instance.instance_id)
+        cloud.terminate_instances(instance_ids)
         if delete_myself:
             self.instance_set.all().delete()
             self.delete()
