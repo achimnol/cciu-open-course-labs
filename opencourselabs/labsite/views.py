@@ -402,6 +402,7 @@ def modify_team(request, labsite, user_team):
     else:
         f = ModifyTeamForm(initial={
             'name': team.name,
+            'hide_private_key': team.hide_private_key,
             'members': [member.id for member in team.members.all()]
         })
     f.fields['members'].queryset = labsite.get_all_students()
