@@ -134,7 +134,8 @@ def dashboard(request, labsite, user_team):
         'notice_list': notices,
         'stat': {
             'vm': {
-                'allocated': Instance.objects.filter(belongs_to__belongs_to__belongs_to=labsite).count(),
+                'allocated': labsite.get_num_allocated_instances(),
+                'running': labsite.get_num_running_instances(),
                 'total': labsite.num_vm,
             },
             'ip': {
@@ -561,7 +562,7 @@ def view_team_console(request, labsite, user_team, team_id):
         if not labsite.is_active:
             return HttpResponseForbidden('This lab is not active.')
         f = AddInstancesForm(request.POST)
-        f.fields['num_instances'].max_value = labsite.num_vm - labsite.get_num_allocated_instances()
+        f.fields['num_instances'].max_value = labsite.num_vm - labsite.get_num_running_instances()
         if f.is_valid():
             num_new_instances = f.cleaned_data['num_instances']
             instance_group = InstanceGroup.objects.get(belongs_to=team)

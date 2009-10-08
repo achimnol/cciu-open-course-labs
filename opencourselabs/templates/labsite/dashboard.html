@@ -45,7 +45,7 @@
 	<div class="main-module">
 		<h4>Site Statistics</h4>
 		<ul>
-			<li>Total VMs allocated : {{stat.vm.allocated}} / {{stat.vm.total}}</li>
+			<li>Total VMs allocated : {{stat.vm.allocated}} / {{stat.vm.total}}{% ifnotequal stat.vm.allocated stat.vm.running %} (actually running {{stat.vm.running}}){% endifnotequal %}</li>
 			<li>Total IPs allocated : {{stat.ip.allocated}} / {{stat.ip.total}}</li>
 		</ul>
 	</div>

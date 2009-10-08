@@ -124,6 +124,10 @@ class Labsite(models.Model):
             num_occupied = 0
         return num_occupied
 
+    def get_num_running_instances(self):
+        from opencourselabs.cloud.models import Instance # Avoid a circular dependency
+        return Instance.objects.filter(belongs_to__belongs_to__belongs_to=self).count()
+
     def get_all_staffs(self):
         return User.objects.filter(
             row_permission_set__name='staff',
