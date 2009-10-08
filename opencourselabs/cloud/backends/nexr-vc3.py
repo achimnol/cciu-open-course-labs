@@ -408,7 +408,7 @@ class BackendAPI(BaseAPI):
         errors = []
         requestId = '(None)'
         if isinstance(response, basestring):
-            errors.append(u'XML syntax error in response. (maybe returned a HTML error page)')
+            errors.append((u'Backend.InvalidResponse', u'XML syntax error in response. (maybe returned a HTML error page)'))
         else:
             for item in response.Errors.iterchildren():
                 try:
