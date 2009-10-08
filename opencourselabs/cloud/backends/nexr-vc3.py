@@ -128,6 +128,7 @@ class BackendAPI(BaseAPI):
         instances = []
 
         # Run the slave nodes.
+        response = '(response1)'
         status, reason, body = self._run_query('RunInstances', self.credentials,
             ImageId=image_id,
             MinCount=num - 1,
@@ -152,6 +153,7 @@ class BackendAPI(BaseAPI):
             self._handle_failures(response, status, reason, 'create_hadoop_cluster')
 
         # Run the master node.
+        response = '(response2)'
         status, reason, body = self._run_query('RunInstances', self.credentials,
             ImageId=image_id,
             MinCount=1,

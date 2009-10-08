@@ -27,9 +27,14 @@ class CloudQueryException(CloudException):
         self.errors = detail['errors']
 
     def __unicode__(self):
-        if self.detail['errors'] is None:
-        	errors = u''
+        if self.detail.has_key('errors') and len(self.details['errors']) > 0:
+            flatted_errors = map(lambda e: '%s: %s' % (e[0], e[1]), self.detail['errors'])
+            errors = u'(%s)' % (u', '.join(flatted_errors))
         else:
-            errors = self.detail['errors']
-        return u'CloudQueryException[requestId=%s]: %s %s' % (self.detail['requestId'], self.message, self.detail['errors'])
+        	errors = u''
+        if self.detail.has_key('requestId'):
+            content = u'CloudQueryException[requestId=%s]: %s %s' % (self.detail['requestId'], self.message, errors)
+        else:
+            content = u'CloudQueryException: %s %s' % (self.message, errors)
+        return content.strip()
 

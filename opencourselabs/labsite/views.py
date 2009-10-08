@@ -367,13 +367,12 @@ def create_team(request, labsite, user_team):
                 return HttpResponseRedirect(reverse('labsite:teams', kwargs={'url_key':labsite.url_key}))
             except CloudQueryException, e:
                 print>>sys.stderr, unicode(e)
-                if e.detail['errors']:
-                    err_msg = u'Error (%s): %s' % (e.detail['errors'][0][0], e.detail['errors'][0][1])
-                else:
-                    err_msg = u'Error (%s): %s' % (e.message, e.detail['errors'])
+                err_msg = u'Error: %s' % unicode(e) 
             except (CloudException, IntegrityError), e:
                 if isinstance(e, IntegrityError) and len(e.message) == 0:
                     e.message = 'Integrity check failed. Please confirm duplicated fields with other teams.'
+                err_msg = u'Error: %s' % e.message
+            except Exception, e:
                 err_msg = u'Error: %s' % e.message
         else:
             err_msg = u'Please check your input.'
