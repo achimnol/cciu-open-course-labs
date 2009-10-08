@@ -103,26 +103,26 @@ class InstanceGroup(models.Model):
 
     def run(self, append=-1):
         cloud = self.backend.get_api()
-        if self.type == INSTANCEGROUP_TYPES.HADOOP_CLUSTER:
-            # We should always destroy all the current instances of this group to deploy Hadoop.
-            self.terminate(delete_myself=False)
-            if append < 0:
-                append = 0
-            self.cluster_name = 'cciu-c-%s' % uuid.uuid4().hex
-            result = cloud.create_hadoop_cluster(self.cluster_name, self.num_instances + append, self.keypair_name, self.security_group.split(','))
-            self.type = INSTANCEGROUP_TYPES.HADOOP_CLUSTER
+        #if self.type == INSTANCEGROUP_TYPES.HADOOP_CLUSTER:
+        #    # We should always destroy all the current instances of this group to deploy Hadoop.
+        #    self.terminate(delete_myself=False)
+        #    if append < 0:
+        #        append = 0
+        #    self.cluster_name = 'cciu-c-%s' % uuid.uuid4().hex
+        #    result = cloud.create_hadoop_cluster(self.cluster_name, self.num_instances + append, self.keypair_name, self.security_group.split(','))
+        #    self.type = INSTANCEGROUP_TYPES.HADOOP_CLUSTER
+        #    self.num_instances = len(result['items'])
+        #    self.save()
+        #else:
+        if append == -1:
+            # Creates a new instance group.
+            result = cloud.run_instances(self.num_instances, self.keypair_name, self.security_group.split(','))
             self.num_instances = len(result['items'])
-            self.save()
-        else:
-            if append == -1:
-                # Creates a new instance group.
-                result = cloud.run_instances(self.num_instances, self.keypair_name, self.security_group.split(','))
-                self.num_instances = len(result['items'])
-            elif append > 0:
-                # Adds new instances to this group.
-                result = cloud.run_instances(append, self.keypair_name, self.security_group.split(','))
-                self.num_instances += len(result['items'])
-            self.save()
+        elif append > 0:
+            # Adds new instances to this group.
+            result = cloud.run_instances(append, self.keypair_name, self.security_group.split(','))
+            self.num_instances += len(result['items'])
+        self.save()
         # Adds information of new instances.
         for item in result['items']:
             instance = Instance()

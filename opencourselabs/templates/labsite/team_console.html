@@ -42,11 +42,11 @@ $(document).ready(function() {
 		}
 	});
 	$('#id_redeploy_hadoop').click(function(ev) {
-		if (is_hadoop) {
-			$(this).attr('checked', true);
-			alert('The current instance group is already a Hadoop cluster, so it must redeployed.');
-			return;
-		}
+		//if (is_hadoop) {
+		//	$(this).attr('checked', true);
+		//	alert('The current instance group is already a Hadoop cluster, so it must redeployed.');
+		//	return;
+		//}
 		if ($(this).attr('checked')) {
 			alert('If you (re)deploy Hadoop, it will destroy the current instances. Please be sure all necessary data is backed up.');
 		}
