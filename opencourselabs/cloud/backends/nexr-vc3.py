@@ -410,6 +410,7 @@ class BackendAPI(BaseAPI):
         if isinstance(response, basestring):
             errors.append(u'XML syntax error in response. (maybe returned a HTML error page)')
         else:
+            requestId = response.RequestID.text
             for item in response.Errors.iterchildren():
                 try:
                     errors.append((item.Code.text, item.Message.text))
